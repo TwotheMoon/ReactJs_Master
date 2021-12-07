@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const Father = styled.div`
@@ -10,30 +9,16 @@ const Box = styled.div`
   height: 100px;
 `;
 
+const Circle = styled(Box)`
+  border-radius: 50px;      
+`;
+
 function App() {
-  const date = new Date();
-  const [dateTime, setDateTime] = useState({
-    hours: date.getHours(),
-    minutes: date.getMinutes(),
-    seconds: date.getSeconds()
-  });
-  useEffect(() => {
-    const timer = setInterval(() => {
-      const date = new Date();
-      setDateTime({
-        hours: date.getHours(),
-        minutes: date.getMinutes(),
-        seconds: date.getSeconds()
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
 
   return (
     <Father>
-      <div>{dateTime.hours}:{dateTime.minutes}:{dateTime.seconds}</div>
       <Box bgColor="teal" />
-      <Box bgColor="tomato" />
+      <Circle bgColor="tomato" />
     </Father>
   );
 }
