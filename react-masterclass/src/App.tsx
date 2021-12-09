@@ -64,6 +64,9 @@ html, body, div, span, applet, object, iframe,
     text-decoration:none;
     color: inherit; // 부모로부터 속성 가져오기
   }
+  p{
+    line-height: 20px;
+  }
 `;
 
 function App() {
