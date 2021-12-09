@@ -24,6 +24,8 @@ const Coin = styled.li`
     padding: 20px;
     border-radius: 15px;
     margin-bottom: 10px;  
+    display: flex;
+    align-items: center;
     a{
         transition: color 0.2s ease-in;
         display: block;
@@ -43,6 +45,12 @@ const Title = styled.h1`
 const Loader = styled.span`
   text-align: center;
   display: block;
+`;
+
+const Img = styled.img`
+    width: 35px;
+    height: 35px;
+    margin-right: 10px;
 `;
 
 // 코인데이터 타입 정의
@@ -78,8 +86,12 @@ function Coins() {
             ) : (
                 <CoinsList>
                     {coins.map(coin => (
-                        <Link to={`/${coin.id}`}>
+                        <Link to={{
+                            pathname: `/${coin.id}`,
+                            state: { name: coin.name },
+                        }}>
                             <Coin key={coin.id}>
+                                <Img src={`https://cryptoicon-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`} />
                                 {coin.name} &rarr;
                             </Coin>
                         </Link >
