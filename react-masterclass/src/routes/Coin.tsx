@@ -69,6 +69,10 @@ const Tap = styled.span<{ isActive: boolean }>`
     color: ${(props) => props.isActive ? props.theme.accentColor : props.theme.textColor};
 `;
 
+const TestContainer = styled.div`
+
+`;
+
 
 interface RouteParams {
     coinId: string;
@@ -143,6 +147,13 @@ function Coin() {
     const [priceInfo, setPriceInfo] = useState<PriceData>();
     const priceMatch = useRouteMatch("/:coinId/price");
     const chartMatch = useRouteMatch("/:coinId/chart");
+    const [boolean, setBoolean] = useState(true);
+    const [textArr1, setTextArr1] = useState(['남자코트 추천', '강남 우동 맛집']);
+    const [textArr2, setTextArr2] = useState(['여자코트 추천', '홍대 우동 맛집']);
+    function onClick() {
+        setBoolean((prev) => !prev);
+    }
+
     useEffect(() => {
         (async () => {
             const infoData = await (
@@ -201,6 +212,11 @@ function Coin() {
                             <Link to={`/${coinId}/price`}>Price</Link>
                         </Tap>
                     </Taps>
+
+                    <TestContainer>
+                        <div>{boolean ? textArr1[0] : textArr2[0]}</div>
+                        <button onClick={onClick}>Click</button>
+                    </TestContainer>
 
                     <Switch>
                         <Route path={`/${coinId}/price`}>
