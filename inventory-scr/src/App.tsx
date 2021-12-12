@@ -58,6 +58,10 @@ const GlobalStyle = createGlobalStyle`
     body{
      background-color: #2f3640;
     }
+    a{
+      text-decoration:none;
+      color:inherit;
+    }
 `;
 
 function App() {

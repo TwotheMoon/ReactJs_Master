@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -57,7 +58,7 @@ interface IScr {
     color: string,      //잔량 수량 구간
 }
 
-function ScrMain(this: any) {
+function ScrMain() {
     const [loading, setLoading] = useState(true);
     const [scr, setScr] = useState<IScr[]>([]);
     useEffect(() => {
@@ -67,7 +68,7 @@ function ScrMain(this: any) {
             setScr(json.data);
             setLoading(false);
         })();
-    }, [300000]) // 5분마다 업데이트
+    }, []) // 5분마다 업데이트
 
     // 카카오맵 API
     const { kakao } = window;
@@ -85,23 +86,15 @@ function ScrMain(this: any) {
                 }
                 const map = new kakao.maps.Map(container, options);
 
-                var imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
-                for (var i = 0; i < scr.length; i++) {
+                var markerPosition = new kakao.maps.LatLng(lat, lon);
 
-                    // 마커 이미지의 이미지 크기 입니다
-                    var imageSize = new kakao.maps.Size(24, 35);
+                // 마커를 생성합니다
+                var marker = new kakao.maps.Marker({
+                    position: markerPosition
+                });
 
-                    // 마커 이미지를 생성합니다    
-                    var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
-
-                    // 마커를 생성합니다
-                    var marker = new kakao.maps.Marker({
-                        map: map, // 마커를 표시할 지도
-                        position: new kakao.maps.Lating(scr[i].lat, scr[i].lng), // 마커를 표시할 위치
-                        title: scr[i].name, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
-                        image: markerImage // 마커 이미지 
-                    });
-                }
+                // 마커가 지도 위에 표시되도록 설정합니다
+                marker.setMap(map);
             }
             );
         }
@@ -136,17 +129,22 @@ function ScrMain(this: any) {
             ) : (
                 <ScrList>
                     {scr?.map((scr) => (
-                        <Scr key={scr.code}>
-                            <h1>{scr.name}</h1> <br />
-                            <h2>재고: {scr.inventory} L</h2>
-                            <hr />
-                            주소: {scr.addr} <br />
-                            가격: {scr.price}원 <br />
-                            전화번호: {scr.tel} <br />
-                            <hr />
-                            최근 업데이트:{scr.regDt}
-                            <br />
-                        </Scr>
+                        <Link to={{
+                            pathname: `/${scr.code}`,
+                            state: { name: scr.name },
+                        }}>
+                            <Scr key={scr.code}>
+                                <h1>{scr.name}</h1> <br />
+                                <h2>재고: {scr.inventory} L</h2>
+                                <hr />
+                                주소: {scr.addr} <br />
+                                가격: {scr.price}원 <br />
+                                전화번호: {scr.tel} <br />
+                                <hr />
+                                최근 업데이트:{scr.regDt}
+                                <br />
+                            </Scr>
+                        </Link>
                     ))}
                 </ScrList>
             )}
