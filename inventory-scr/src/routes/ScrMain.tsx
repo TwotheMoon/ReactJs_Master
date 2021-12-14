@@ -61,6 +61,7 @@ interface IScr {
 function ScrMain() {
     const [loading, setLoading] = useState(true);
     const [scr, setScr] = useState<IScr[]>([]);
+
     useEffect(() => {
         (async () => {
             const response = await fetch("https://api.odcloud.kr/api/uws/v1/inventory?page=1&perPage=500&serviceKey=iVajbcB%2B7uBB9PieYeyeSvBXJElGL%2B2QZTU1nVnPjt7YvwDQcbIl7nNUIygDzGNAMXdO8nwl8%2BjlxgKtDmmTNQ%3D%3D");
@@ -68,13 +69,15 @@ function ScrMain() {
             setScr(json.data);
             setLoading(false);
         })();
-    }, []) // 5분마다 업데이트
+    }, [])
 
     // 카카오맵 API
     const { kakao } = window;
+
     function KakaoMapScript() {
         const container = document.getElementById('myMap');
 
+        // 카카오맵, 현재위치
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
                 let lat = position.coords.latitude;
@@ -86,22 +89,54 @@ function ScrMain() {
                 }
                 const map = new kakao.maps.Map(container, options);
 
-                var markerPosition = new kakao.maps.LatLng(lat, lon);
+                let markerPosition = new kakao.maps.LatLng(lat, lon);
 
-                // 마커를 생성합니다
-                var marker = new kakao.maps.Marker({
-                    position: markerPosition
+                let marker = new kakao.maps.Marker({
+                    position: markerPosition,
+                    title: "현재 위치"
                 });
 
-                // 마커가 지도 위에 표시되도록 설정합니다
                 marker.setMap(map);
+
+                // 주유소 마커 표시
+                let imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
+                for (let i = 0; i < scr.length; i++) {
+                    let latlng = new kakao.maps.LatLng(scr[i].lat, scr[i].lng);
+                    let infoText = `${scr[i].name} 재고: ${scr[i].inventory}L`;
+
+                    let imageSize = new kakao.maps.Size(24, 35);
+                    let markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
+
+                    let markers = new kakao.maps.Marker({
+                        map: map,
+                        position: latlng,
+                        title: scr[i].name + scr[i].inventory + "L",
+                        text: scr[i].name + scr[i].inventory + "L",
+                        image: markerImage
+                    });
+
+                    markers.setMap(map);
+
+                    // 주유소 마커 클릭시 정보 표시
+                    let iwContent = `<div style="padding:5px; width:300px;">${infoText}</div>`,
+                        iwRemoveable = true;
+
+                    let infowindow = new kakao.maps.InfoWindow({
+                        content: iwContent,
+                        removable: iwRemoveable
+                    });
+                    kakao.maps.event.addListener(markers, 'click', function () {
+
+                        infowindow.open(map, markers);
+                    });
+                }
             }
             );
         }
-    }
+    };
     useEffect(() => {
         KakaoMapScript();
-    }, []);
+    }, [KakaoMapScript]);
 
 
     return (
@@ -114,12 +149,13 @@ function ScrMain() {
                 width: '600px',
                 height: '500px'
             }}></div>
+            <br />
 
             <form>
                 <select>
-                    <option>재고</option>
-                    <option>주소</option>
                     <option>이름</option>
+                    <option>주소</option>
+                    <option>재고</option>
                 </select>
                 <input placeholder="검색어 입력"></input>
             </form>

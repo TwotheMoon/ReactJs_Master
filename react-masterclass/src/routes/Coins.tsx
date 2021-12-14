@@ -66,8 +66,8 @@ interface ICoin {
 }
 
 function Coins() {
-    const { isLoading, data } = useQuery<ICoin[]>("allCoins", fetchCoins)
-
+    // {데이터 가져왔을시 실행, 가져온 데이터}
+    const { isLoading, data } = useQuery<ICoin[]>("allCoins", fetchCoins)   //api.ts fetchCoins 함수 이용
     return (
         <Container>
             <Header>

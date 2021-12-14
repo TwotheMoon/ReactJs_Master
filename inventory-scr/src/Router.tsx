@@ -6,11 +6,11 @@ function Router() {
     return (
         <BrowserRouter>
             <Switch>
-                <Route path="/">
-                    <ScrMain />
-                </Route>
                 <Route path={"/:scrCode"}>
                     <DetailScr />
+                </Route>
+                <Route path="/">
+                    <ScrMain />
                 </Route>
             </Switch>
         </BrowserRouter>
