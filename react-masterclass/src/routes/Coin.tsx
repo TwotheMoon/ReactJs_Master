@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { Switch, Route, useLocation, useParams, useRouteMatch } from "react-router";
 import { Link } from "react-router-dom";
@@ -145,7 +144,7 @@ function Coin() {
     const chartMatch = useRouteMatch("/:coinId/chart");
     const { isLoading: infoLoading, data: infoData } = useQuery<InfoData>(["info", coinId], () => fetchCoinInfo(coinId));
     const { isLoading: tickersLoading, data: tickersData } = useQuery<PriceData>(["tickers", coinId], () => fetchCoinTickers(coinId));
-    const loading = infoLoading || tickersLoading;
+    const loading = infoLoading || tickersLoading;                                                    // api.ts에 함수를 호출해서 coinId 인자 넘겨줌
     return (
         <Container>
             <Header>
@@ -193,11 +192,11 @@ function Coin() {
                     </Taps>
 
                     <Switch>
-                        <Route path={`/${coinId}/price`}>
+                        <Route path={`/:coinId/price`}>
                             <Price />
                         </Route>
-                        <Route path={`/${coinId}/chart`}>
-                            <Chart />
+                        <Route path={`/:coinId/chart`}>
+                            <Chart coinId={coinId} />
                         </Route>
                     </Switch>
                 </>
