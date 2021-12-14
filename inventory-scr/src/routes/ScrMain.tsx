@@ -3,21 +3,31 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const Container = styled.div`
-        padding: 0px 20px;
-    max-width: 600px;
+    max-width: 480px;
+    padding: 0px 20px;
     margin: 0 auto;
 `;
+
+const MapContainer = styled.div`
+    max-width: 480px;
+    height: 600px;
+`;
 const Header = styled.header`
-   height: 10vh;
+  width: 480px;
+  margin: 0 auto;
+  height: 10vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    
 `;
 
 const Title = styled.h1`
     font-size: 30px;
     color: #7d70db;
     font-weight: bold;
+    max-width: 480px;
+  margin: 0 auto;
 `;
 
 const Loader = styled.span`
@@ -25,10 +35,11 @@ const Loader = styled.span`
   display: block;
 `;
 
-const ScrList = styled.ul``;
+const ScrList = styled.ul`
+    width: 480px;
+`;
 
 const Scr = styled.li`
-    width: 600px;
     background-color: white;
     margin-top: 20px;
     border-radius: 15px;
@@ -37,6 +48,7 @@ const Scr = styled.li`
     h1{
         font-size: 20px;
         font-weight: bold;
+        line-height: 25px;
     }
     h2{
         font-size: 18px;
@@ -85,7 +97,7 @@ function ScrMain() {
 
                 const options = {
                     center: new kakao.maps.LatLng(lat, lon),
-                    level: 3
+                    level: 5
                 }
                 const map = new kakao.maps.Map(container, options);
 
@@ -144,11 +156,13 @@ function ScrMain() {
             <Header>
                 <Title> 요소수 재고 현황{loading ? "(Loading...)" : `(${scr.length})`} </Title>
             </Header>
-
+            <MapContainer>
             <div id='myMap' style={{
-                width: '600px',
-                height: '500px'
-            }}></div>
+                width: '480px',
+                height: '600px'
+            }}>
+            </div>
+            </MapContainer>
             <br />
 
             <form>
