@@ -1,6 +1,4 @@
 import { createGlobalStyle } from "styled-components";
-import Router from "./Router";
-import { ReactQueryDevtools } from "react-query/devtools";
 
 const GlobalStyle = createGlobalStyle`
 // fonts
@@ -75,8 +73,6 @@ function App() {
     // 여러개의 컴포넌트 반환을 위해 유령 컴포넌트 생성
     <>
       <GlobalStyle />
-      <Router />
-      <ReactQueryDevtools initialIsOpen={true} />
     </>
   );
 }
