@@ -72,11 +72,11 @@ function Coins() {
         <Container>
             <Helmet>
                 <title>
-                    코인{isLoading ? "(loading)" : `(${data?.slice(0, 100).length})`}
+                Moon's Coin{isLoading ? "(loading)" : `(${data?.slice(0, 100).length})`}
                 </title>
             </Helmet>
             <Header>
-                <Title>코인{isLoading ? "(loading)" : `(${data?.slice(0, 100).length})`}</Title>
+                <Title>Moon's Coin{isLoading ? "(loading)" : `(${data?.slice(0, 100).length})`}</Title>
             </Header>
             {isLoading ? (
                 <Loader>Loaing...</Loader>

@@ -17,13 +17,14 @@ const Container = styled.div`
 const Header = styled.header`
     height: 10vh;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
 `;
 
 const Title = styled.h1`
     font-size: 48px;
     color: ${(props) => props.theme.accentColor};
+    padding-right: 50px;
 `;
 
 const Loader = styled.span`
@@ -72,6 +73,17 @@ const Tap = styled.span<{ isActive: boolean }>`
     color: ${(props) => props.isActive ? props.theme.accentColor : props.theme.textColor};
 `;
 
+const Backspace = styled.div`
+    width:50px;
+    height:38px;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 30px;
+`;
+
+const BinWrapper = styled.div``;
 
 
 interface RouteParams {
@@ -157,9 +169,16 @@ function Coin() {
                 </title>
             </Helmet>
             <Header>
+                <Backspace>
+                    <Link to={`/`}>
+                        <h1>&larr;</h1>
+                    </Link>
+                </Backspace>
                 <Title>
                     {state?.name ? state.name : loading ? "Loading..." : infoData?.name}
                 </Title>
+                <BinWrapper>
+                </BinWrapper>
             </Header>
             {loading ? (
                 <Loader>Loaing...</Loader>
@@ -202,7 +221,7 @@ function Coin() {
 
                     <Switch>
                         <Route path={`/:coinId/price`}>
-                            <Price />
+                            <Price coinId={coinId} />
                         </Route>
                         <Route path={`/:coinId/chart`}>
                             <Chart coinId={coinId} />
