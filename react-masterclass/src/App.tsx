@@ -1,4 +1,5 @@
 import { createGlobalStyle } from "styled-components";
+import ToDoList from "./ToDoList";
 
 const GlobalStyle = createGlobalStyle`
 // fonts
@@ -73,6 +74,7 @@ function App() {
     // 여러개의 컴포넌트 반환을 위해 유령 컴포넌트 생성
     <>
       <GlobalStyle />
+      <ToDoList />
     </>
   );
 }
