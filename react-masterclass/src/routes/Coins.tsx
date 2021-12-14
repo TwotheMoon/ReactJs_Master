@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -69,6 +70,11 @@ function Coins() {
     const { isLoading, data } = useQuery<ICoin[]>("allCoins", fetchCoins)   //api.ts fetchCoins 함수 이용
     return (
         <Container>
+            <Helmet>
+                <title>
+                    코인{isLoading ? "(loading)" : `(${data?.slice(0, 100).length})`}
+                </title>
+            </Helmet>
             <Header>
                 <Title>코인{isLoading ? "(loading)" : `(${data?.slice(0, 100).length})`}</Title>
             </Header>

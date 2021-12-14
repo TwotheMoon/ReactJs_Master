@@ -16,7 +16,9 @@ interface ChartProps { // coinId 변수 데이터 타입 정의
     coinId: string;
 }
 function Chart({ coinId }: ChartProps) {
-    const { isLoading, data } = useQuery<IHistorical[]>(["ohlcv", coinId], () => fetchCoinHistory(coinId));
+    const { isLoading, data } = useQuery<IHistorical[]>(["ohlcv", coinId], () => fetchCoinHistory(coinId),
+        { refetchInterval: 10000, }
+    );
     return (
         <div>
             {isLoading ? ("Loading chart..."
