@@ -7,6 +7,12 @@ export interface IToDo {
     category: "TO_DO" | "DOING" | "DONE",  // 모든 string 타입이 아닌 세가지 타입중 하나
 }
 
+// 유저가 원하는 카테고리의 toDo 만 저장 하는 select state
+export const categoryState = atom({
+    key: "category",
+    default: "TO_DO",
+});
+
 export const toDoState = atom<IToDo[]>({
     key: "toDo",
     default: [],
@@ -16,10 +22,7 @@ export const toDoSelector = selector({
     key: "toDoSelector",
     get: ({ get }) => {
         const toDos = get(toDoState);
-        return [
-            toDos.filter((toDo) => toDo.category === "TO_DO"),
-            toDos.filter((toDo) => toDo.category === "DOING"),
-            toDos.filter((toDo) => toDo.category === "DONE"),
-        ];   // 새 배열에 카테고리별로 나눠서 다시 생성
+        const category = get(categoryState);
+        return toDos.filter((toDo) => toDo.category === category);
     },
 });
