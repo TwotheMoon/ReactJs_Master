@@ -34,21 +34,43 @@ import { useForm } from "react-hook-form";
 
 // react-hook-form 사용 회원가입 폼
 function ToDoList() {
-    const { register, watch } = useForm();
-    // register : onChagne, onBlur, ref 관련 wathc : 폼에 모든 값을 주시
-    console.log(watch());
+    const { register, handleSubmit, formState } = useForm();
+
+    // 데이터의 값이 유효할떄 할 일
+    const onValid = (data: any) => {
+        console.log(data);
+    };
+    console.log(formState.errors);
     return (
         <div>
-            <form>          {/*es6 문법 toDo라는 이름의 함수로 반환하는 데이터 props 로 제공 */}
-                <input {...register("email")} placeholder="Email"></input>
-                <input {...register("firstName")} placeholder="First Name"></input>
-                <input {...register("lastName")} placeholder="Last Name"></input>
-                <input {...register("userName")} placeholder="Username"></input>
-                <input {...register("password")} placeholder="Password"></input>
-                <input {...register("passwordConfig")} placeholder="PasswordConfig"></input>
+            <form style={{ display: "flex", flexDirection: "column" }} onSubmit={handleSubmit(onValid)}>          {/*es6 문법 toDo라는 이름의 함수로 반환하는 데이터 props 로 제공 */}
+                <input
+                    {...register("email", { required: true })} placeholder="Email"
+                />
+                <input
+                    {...register("firstName", { required: true })} placeholder="First Name"
+                />
+                <input
+                    {...register("lastName", { required: true })} placeholder="Last Name"
+                />
+                <input
+                    {...register("userName", { required: true, minLength: 10 })} placeholder="Username"
+                />
+                <input
+                    {...register("password", { required: true, minLength: 5 })} placeholder="Password"
+                />
+                <input
+                    {...register("passwordConfig", {
+                        required: "Password is required",
+                        minLength: {
+                            value: 5,
+                            message: "패스워드가 너무 짧아요"
+                        }
+                    })} placeholder="PasswordConfig"
+                />
                 <button>Add</button>
             </form>
-        </div>
+        </div >
     );
 }
 
