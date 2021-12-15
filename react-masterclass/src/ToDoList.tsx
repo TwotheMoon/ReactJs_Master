@@ -32,21 +32,45 @@ import { useForm } from "react-hook-form";
 //     );
 // }
 
+interface IForm {
+    email: string
+    firstName: string
+    lastName: string
+    userName: string
+    password: string
+    passwordConfig: string
+    // required 가 아닌 항목은 ? 기입 해줘야함
+}
+
 // react-hook-form 사용 회원가입 폼
 function ToDoList() {
-    const { register, handleSubmit, formState } = useForm();
+    const { register, handleSubmit, formState: { errors } } = useForm<IForm>({
+        defaultValues: {
+            email: "@naver.com",
+        }
+    });
 
     // 데이터의 값이 유효할떄 할 일
     const onValid = (data: any) => {
         console.log(data);
     };
-    console.log(formState.errors);
+    console.log(errors);
     return (
         <div>
             <form style={{ display: "flex", flexDirection: "column" }} onSubmit={handleSubmit(onValid)}>          {/*es6 문법 toDo라는 이름의 함수로 반환하는 데이터 props 로 제공 */}
                 <input
-                    {...register("email", { required: true })} placeholder="Email"
+                    {...register("email", {
+                        required: "이메일을 적어주세요",
+                        pattern: {
+                            value: /^[A-Za-z0-9._%+-]+@naver.com$/,
+                            message: "지원하지 않는 이메일 형식 이에요.",
+                        },
+                    })}
+                    placeholder="Email"
                 />
+                <span>
+                    {errors?.email?.message}
+                </span>
                 <input
                     {...register("firstName", { required: true })} placeholder="First Name"
                 />
@@ -68,6 +92,10 @@ function ToDoList() {
                         }
                     })} placeholder="PasswordConfig"
                 />
+                <span>
+                    {errors?.passwordConfig?.message}
+                </span>
+
                 <button>Add</button>
             </form>
         </div >
