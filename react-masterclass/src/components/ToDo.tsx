@@ -16,9 +16,9 @@ function ToDo({ text, category, id }: IToDo) {
         setToDos((oldToDos) => {
             const targetIndex = oldToDos.findIndex((toDo) => toDo.id === id);
             const oldToDo = oldToDos[targetIndex]       // 바꿀 버튼 인덱스 기존배열에서[찾은 인덱스 번호]
-            const newToDo = { text, id, category: name };  // 새로 세팅 name 을 category와 같은 문자열로 했기에 값을 name올 설정
-            console.log(oldToDo, newToDo);
-            return oldToDos;
+            const newToDo = { text, id, category: name as any };  // 새로 세팅 name 을 category와 같은 문자열로 했기에 값을 name올 설정
+            console.log(oldToDo, newToDo);         // newToDo 타입이 string이여서 오류 발생 as any로 일시적 회피
+            return [...oldToDos.slice(0, targetIndex), newToDo, ...oldToDos.slice(targetIndex + 1)];
         });
     };
 
