@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { useQuery } from "react-query";
@@ -89,6 +89,10 @@ const Scr = styled.li`
     }
 `;
 
+const TestCom = styled.div`
+
+`;
+
 interface IScr {
     addr: string,       //주유소 주소
     code: string,       //주유소 코드
@@ -104,17 +108,37 @@ interface IScr {
     data: any,
 }
 
+interface IFindScr {
+    addr: string,       //주유소 주소
+    code: string,       //주유소 코드
+    inventory: string,  //재고량
+    lat: string,        //주유소 위도
+    lng: string,        //주유소 경도
+    name: string,       //주유소 이름
+    openTime: string,   //영업시간
+    price: string,      //요소수 가격
+    regDt: string,      //업데이트 일시
+    tel: string,        //주유소 전화번호
+    color: string,      //잔량 수량 구간
+}
+
 function ScrMain() {
     const { isLoading, data } = useQuery<IScr>("allScr", fetchScr, { refetchInterval: 300000, });
     const scrData = data?.data;
+
+    const [findScr, setFindScr] = useState<IFindScr>();
+
+
     // 카카오맵 API
     const { kakao } = window;
 
     function KakaoMapScript() {
         const container = document.getElementById('myMap');
         const scrData = data?.data;
+
         // 카카오맵, 현재위치
         if (navigator.geolocation) {
+
             navigator.geolocation.getCurrentPosition(function (position) {
                 let lat = position.coords.latitude;
                 let lon = position.coords.longitude;
@@ -138,7 +162,6 @@ function ScrMain() {
                 let imageSrc = "img/scrImg.png";
                 for (let i = 0; i < scrData?.length; i++) {
                     let latlng = new kakao.maps.LatLng(scrData[i].lat, scrData[i].lng);
-                    let infoText = `${scrData[i].name} 재고: ${scrData[i].inventory}L`;
 
                     let imageSize = new kakao.maps.Size(35, 35);
                     let markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
@@ -154,7 +177,14 @@ function ScrMain() {
                     markers.setMap(map);
 
                     // 주유소 마커 클릭시 정보 표시
-                    let iwContent = `<div style="padding:5px; width:300px;">${infoText}</div>`,
+                    let infoText = `${scrData[i].name} 재고: ${scrData[i].inventory}L`;
+                    let iwContent = `
+                    <div style="padding:5px; width:300px;">
+                    ${infoText}
+                    <br>
+                    <a href="https://map.kakao.com/link/map/${scrData[i].name},${scrData[i].lat},${scrData[i].lng}" style="color:blue" target="_blank">큰지도보기</a> 
+                    <a href="https://map.kakao.com/link/to/${scrData[i].name},${scrData[i].lat},${scrData[i].lng}" style="color:blue" target="_blank">길찾기</a></div>'
+                    </div>`,
                         iwRemoveable = true;
 
                     let infowindow = new kakao.maps.InfoWindow({
@@ -164,7 +194,19 @@ function ScrMain() {
                     kakao.maps.event.addListener(markers, 'click', function () {
                         infowindow.open(map, markers);
 
-                    });
+                        function mapOnClick(scrCode: string) {
+                            if (scrData[i].code === scrCode) {
+                                const findScr = scrData[i];
+                                return findScr;
+                            }
+                        }
+
+                        const findScr = mapOnClick(scrData[i].code);
+
+                        setFindScr(findScr);
+
+                    }); // kakao addLister End
+
                 }
             }
             );
@@ -174,7 +216,7 @@ function ScrMain() {
         KakaoMapScript();
     }, [KakaoMapScript]);
 
-
+    console.log(findScr);
     return (
         <Container>
             <Header>
@@ -191,6 +233,11 @@ function ScrMain() {
                 </div>
             </MapContainer>
             <br />
+            <TestCom>
+                {findScr?.name}
+                {findScr?.inventory}
+                {findScr?.addr}
+            </TestCom>
 
             <SearchForm>
                 <form>

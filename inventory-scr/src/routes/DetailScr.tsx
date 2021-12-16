@@ -64,6 +64,25 @@ function DetailScr() {
                 });
 
                 marker.setMap(map);
+                // 주유소 마커 클릭시 정보 표시
+                let iwContent = `
+                <div style="padding:5px; width:350px; color:black;">
+                ${state.name} <br>
+                 재고: ${state.inventory}L
+                <br>
+                <a href="https://map.kakao.com/link/map/${state.name},${state.lat},${state.lng}" style="color:blue" target="_blank">큰지도보기</a> 
+                <a href="https://map.kakao.com/link/to/${state.name},${state.lat},${state.lng}" style="color:blue" target="_blank">길찾기</a></div>'
+                </div>`,
+                    iwRemoveable = true;
+
+                let infowindow = new kakao.maps.InfoWindow({
+                    content: iwContent,
+                    removable: iwRemoveable
+                });
+                kakao.maps.event.addListener(marker, 'click', function () {
+                    infowindow.open(map, marker);
+
+                });
             }
             );
         }
