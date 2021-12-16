@@ -8,6 +8,14 @@ const Container = styled.div`
     max-width: 480px;
     padding: 0px 20px;
     margin: 0 auto;
+    span{
+        width: 480px;
+        font-size: 15px;
+        font-weight: bold;
+        text-align: center;
+        color:white;
+        display: block;
+        }
 `;
 
 const MapContainer = styled.div`
@@ -35,34 +43,6 @@ const Title = styled.h1`
   }
 `;
 
-const SearchForm = styled.div`
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    select{
-        background-color: inherit;
-        color: white;
-        margin-right: 10px;
-        border-radius: 10px;
-        .optionItem{
-            background-color: black;
-        }
-    }   
-    input{
-        background-color: inherit;
-        margin-right: 10px;
-        border-radius: 10px;
-        ::placeholder {
-            color: white;
-        };
-    }
-    button{
-        border-radius: 10px;
-        height: 25px;
-    }
-`;
-
 const Loader = styled.span`
   text-align: center;
   display: block;
@@ -70,13 +50,13 @@ const Loader = styled.span`
 
 const ScrList = styled.ul`
     width: 480px;
+    margin-top: 12px;
 `;
 
 const Scr = styled.li`
     background-color: white;
-    margin-top: 20px;
     border-radius: 15px;
-    padding: 20px 20px;
+    padding: 10px 20px;
     line-height: 20px;
     h1{
         font-size: 20px;
@@ -89,9 +69,6 @@ const Scr = styled.li`
     }
 `;
 
-const TestCom = styled.div`
-
-`;
 
 interface IScr {
     addr: string,       //주유소 주소
@@ -202,7 +179,6 @@ function ScrMain() {
                         }
 
                         const findScr = mapOnClick(scrData[i].code);
-
                         setFindScr(findScr);
 
                     }); // kakao addLister End
@@ -214,9 +190,8 @@ function ScrMain() {
     };  // KakaoMapScript() End
     useEffect(() => {
         KakaoMapScript();
-    }, [KakaoMapScript]);
+    }, [isLoading]);
 
-    console.log(findScr);
     return (
         <Container>
             <Header>
@@ -233,59 +208,42 @@ function ScrMain() {
                 </div>
             </MapContainer>
             <br />
-            <TestCom>
-                {findScr?.name}
-                {findScr?.inventory}
-                {findScr?.addr}
-            </TestCom>
-
-            <SearchForm>
-                <form>
-                    <select>
-                        <option className="optionItem">이름</option>
-                        <option className="optionItem">주소</option>
-                        <option className="optionItem">재고</option>
-                    </select>
-                    <input placeholder="검색어 입력"></input>
-                    <button>찾기</button>
-                </form>
-            </SearchForm>
-
 
             {isLoading ? (
                 <Loader>Loading...</Loader>
             ) : (
-                <ScrList>
-                    {scrData?.map((scr: IScr) => (
+                <>
+                    <span> *5분마다 업데이트 되며 실제 재고와 차이가 있을 수 있습니다.</span>
+                    <ScrList>
                         <Link to={{
-                            pathname: `/${scr.code}`,
+                            pathname: `/${findScr?.code}`,
                             state: {
-                                name: scr.name,
-                                inventory: scr.inventory,
-                                addr: scr.addr,
-                                price: scr.price,
-                                tel: scr.tel,
-                                regDt: scr.regDt,
-                                lat: scr.lat,
-                                lng: scr.lng,
-                                openTime: scr.openTime,
+                                name: findScr?.name,
+                                inventory: findScr?.inventory,
+                                addr: findScr?.addr,
+                                price: findScr?.price,
+                                tel: findScr?.tel,
+                                regDt: findScr?.regDt,
+                                lat: findScr?.lat,
+                                lng: findScr?.lng,
+                                openTime: findScr?.openTime,
                             },
                         }}>
 
-                            <Scr key={scr.code}>
-                                <h1>{scr.name}</h1> <br />
-                                <h2>재고: {scr.inventory} L</h2>
+                            <Scr key={findScr?.code}>
+                                <h1>{findScr?.name}</h1> <br />
+                                <h2>재고: {findScr?.inventory} L</h2>
                                 <hr />
-                                주소: {scr.addr} <br />
-                                가격: {scr.price}원 <br />
-                                전화번호: {scr.tel} <br />
+                                주소: {findScr?.addr} <br />
+                                가격: {findScr?.price}원 <br />
+                                전화번호: {findScr?.tel} <br />
                                 <hr />
-                                최근 업데이트:{scr.regDt}
+                                최근 업데이트: {findScr?.regDt}
                                 <br />
                             </Scr>
                         </Link>
-                    ))}
-                </ScrList>
+                    </ScrList>
+                </>
             )}
         </Container>
     );

@@ -6,9 +6,9 @@ function Router() {
     return (
         <BrowserRouter basename={process.env.PUBLIC_URL}>
             <Switch>
-                <Route path={"/:scrCode"}>
+                {/* <Route path={"/:scrCode"}>
                     <DetailScr />
-                </Route>
+                </Route> */}
                 <Route path="/">
                     <ScrMain />
                 </Route>
