@@ -1,17 +1,20 @@
 import { useEffect } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import styled from "styled-components";
 
-const MapContainer = styled.div`
-    max-width: 480px;
-    height: 600px;
-`;
 const Container = styled.div`
     max-width: 480px;
     padding: 0px 20px;
     margin: 0 auto;
     color: white;
-`;
+    `;
+const MapContainer = styled.div`
+        max-width: 480px;
+        height: 600px;
+    `;
+const Backword = styled.span`
+    font-size: 30px;
+    `;
 
 interface RouteParams {
     scrCode: string;
@@ -71,17 +74,19 @@ function DetailScr() {
 
     return (
         <>
-            <span>
-                &larr;
-            </span>
-            <MapContainer>
-                <div id='myMap' style={{
-                    width: '480px',
-                    height: '600px'
-                }}>
-                </div>
-            </MapContainer>
             <Container>
+                <MapContainer>
+                    <div id='myMap' style={{
+                        width: '480px',
+                        height: '600px'
+                    }}>
+                    </div>
+                </MapContainer>
+                <Backword>
+                    <Link to={`/`}>
+                        <h1>&larr;</h1>
+                    </Link>
+                </Backword>
                 {state.name}
                 {state.addr}
                 {state.inventory}

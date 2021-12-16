@@ -30,6 +30,9 @@ const Title = styled.h1`
     font-weight: bold;
     max-width: 480px;
   margin: 0 auto;
+  img{
+      width: 35px;
+  }
 `;
 
 const SearchForm = styled.div`
@@ -132,12 +135,12 @@ function ScrMain() {
                 marker.setMap(map);
 
                 // 주유소 마커 표시
-                let imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
+                let imageSrc = "img/scrImg.png";
                 for (let i = 0; i < scrData?.length; i++) {
                     let latlng = new kakao.maps.LatLng(scrData[i].lat, scrData[i].lng);
                     let infoText = `${scrData[i].name} 재고: ${scrData[i].inventory}L`;
 
-                    let imageSize = new kakao.maps.Size(24, 35);
+                    let imageSize = new kakao.maps.Size(35, 35);
                     let markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
 
                     let markers = new kakao.maps.Marker({
@@ -175,7 +178,10 @@ function ScrMain() {
     return (
         <Container>
             <Header>
-                <Title> 요소수 재고 현황{isLoading ? "(Loading...)" : `(${scrData?.length})`} </Title>
+                <Title>
+                    <img src="img/scrImg.png"></img>
+                    요소수 재고 현황{isLoading ? "(Loading...)" : `(${scrData?.length})`}
+                </Title>
             </Header>
             <MapContainer>
                 <div id='myMap' style={{
