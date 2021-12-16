@@ -3,17 +3,19 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { useQuery } from "react-query";
 import { fetchScr } from "../api";
+import { useSetRecoilState } from "recoil";
+import { isDarkAtom } from "../atoms";
 
 const Container = styled.div`
     max-width: 480px;
     padding: 0px 20px;
     margin: 0 auto;
-    span{
+    .infoText{
         width: 480px;
         font-size: 15px;
         font-weight: bold;
         text-align: center;
-        color:white;
+        color:${(props) => props.theme.scrTextColor};
         display: block;
         }
 `;
@@ -41,6 +43,56 @@ const Title = styled.h1`
   img{
       width: 35px;
   }
+`;
+
+const Switch = styled.span`
+    margin-left: 10px;
+.switch-button {
+       position: relative; 
+       display: inline-block; 
+       width: 55px; 
+       height: 30px; 
+    }
+    .switch-button input { 
+        opacity: 0; 
+        width: 0; 
+        height: 0; 
+    }
+    .onoff-switch {
+         position: absolute; 
+         cursor: pointer; 
+         top: 0; 
+         left: 0; 
+         right: 0; 
+         bottom: 0; 
+         border-radius:20px; 
+         background-color: #ccc; 
+         box-shadow: inset 1px 5px 1px #999; 
+         -webkit-transition: .4s; 
+         transition: .4s; 
+        }
+        .onoff-switch:before {
+             position: absolute; 
+             content: ""; 
+             height: 22px; 
+             width: 22px; 
+             left: 4px; 
+             bottom: 4px; 
+             background-color: #fff; 
+             -webkit-transition: .5s; 
+             transition: .4s; 
+             border-radius:20px; 
+            }
+            .switch-button input:checked + .onoff-switch {
+                 background-color: #F2D522; 
+                 box-shadow: inset 1px 5px 1px #E3AE56; 
+                }
+            .switch-button input:checked + .onoff-switch:before {
+                 -webkit-transform: translateX(26px);
+                  -ms-transform: translateX(26px);
+                   transform: translateX(26px);
+                 }
+
 `;
 
 const Loader = styled.span`
@@ -192,12 +244,21 @@ function ScrMain() {
         KakaoMapScript();
     }, [isLoading]);
 
+    const setDarkAtom = useSetRecoilState(isDarkAtom);
+    const toggleDarkAtom = () => setDarkAtom((prev) => !prev);
+
     return (
         <Container>
             <Header>
                 <Title>
                     <img src="img/scrImg.png"></img>
                     요소수 재고 현황{isLoading ? "(Loading...)" : `(${scrData?.length})`}
+                    <Switch>
+                        <label className="switch-button">
+                            <input type="checkbox" onChange={toggleDarkAtom} ></input>
+                            <span className="onoff-switch"></span>
+                        </label>
+                    </Switch>
                 </Title>
             </Header>
             <MapContainer>
@@ -213,7 +274,7 @@ function ScrMain() {
                 <Loader>Loading...</Loader>
             ) : (
                 <>
-                    <span> *5분마다 업데이트 되며 실제 재고와 차이가 있을 수 있습니다.</span>
+                    <span className="infoText"> *5분마다 업데이트 되며 실제 재고와 차이가 있을 수 있습니다.</span>
                     <ScrList>
                         <Link to={{
                             pathname: `/${findScr?.code}`,
