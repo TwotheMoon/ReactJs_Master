@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { useQuery } from "react-query";
+import { fetchScr } from "../api";
 
 const Container = styled.div`
     max-width: 480px;
@@ -28,6 +30,34 @@ const Title = styled.h1`
     font-weight: bold;
     max-width: 480px;
   margin: 0 auto;
+`;
+
+const SearchForm = styled.div`
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    select{
+        background-color: inherit;
+        color: white;
+        margin-right: 10px;
+        border-radius: 10px;
+        .optionItem{
+            background-color: black;
+        }
+    }   
+    input{
+        background-color: inherit;
+        margin-right: 10px;
+        border-radius: 10px;
+        ::placeholder {
+            color: white;
+        };
+    }
+    button{
+        border-radius: 10px;
+        height: 25px;
+    }
 `;
 
 const Loader = styled.span`
@@ -68,27 +98,18 @@ interface IScr {
     regDt: string,      //업데이트 일시
     tel: string,        //주유소 전화번호
     color: string,      //잔량 수량 구간
+    data: any,
 }
 
 function ScrMain() {
-    const [loading, setLoading] = useState(true);
-    const [scr, setScr] = useState<IScr[]>([]);
-
-    useEffect(() => {
-        (async () => {
-            const response = await fetch("https://api.odcloud.kr/api/uws/v1/inventory?page=1&perPage=500&serviceKey=iVajbcB%2B7uBB9PieYeyeSvBXJElGL%2B2QZTU1nVnPjt7YvwDQcbIl7nNUIygDzGNAMXdO8nwl8%2BjlxgKtDmmTNQ%3D%3D");
-            const json = await response.json();
-            setScr(json.data);
-            setLoading(false);
-        })();
-    }, [])
-
+    const { isLoading, data } = useQuery<IScr>("allScr", fetchScr, { refetchInterval: 300000, });
+    const scrData = data?.data;
     // 카카오맵 API
     const { kakao } = window;
 
     function KakaoMapScript() {
         const container = document.getElementById('myMap');
-
+        const scrData = data?.data;
         // 카카오맵, 현재위치
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
@@ -112,9 +133,9 @@ function ScrMain() {
 
                 // 주유소 마커 표시
                 let imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
-                for (let i = 0; i < scr.length; i++) {
-                    let latlng = new kakao.maps.LatLng(scr[i].lat, scr[i].lng);
-                    let infoText = `${scr[i].name} 재고: ${scr[i].inventory}L`;
+                for (let i = 0; i < scrData?.length; i++) {
+                    let latlng = new kakao.maps.LatLng(scrData[i].lat, scrData[i].lng);
+                    let infoText = `${scrData[i].name} 재고: ${scrData[i].inventory}L`;
 
                     let imageSize = new kakao.maps.Size(24, 35);
                     let markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
@@ -122,8 +143,8 @@ function ScrMain() {
                     let markers = new kakao.maps.Marker({
                         map: map,
                         position: latlng,
-                        title: scr[i].name + scr[i].inventory + "L",
-                        text: scr[i].name + scr[i].inventory + "L",
+                        title: scrData[i].name + scrData[i].inventory + "L",
+                        text: scrData[i].name + scrData[i].inventory + "L",
                         image: markerImage
                     });
 
@@ -138,14 +159,14 @@ function ScrMain() {
                         removable: iwRemoveable
                     });
                     kakao.maps.event.addListener(markers, 'click', function () {
-
                         infowindow.open(map, markers);
+
                     });
                 }
             }
             );
-        }
-    };
+        }   // if End
+    };  // KakaoMapScript() End
     useEffect(() => {
         KakaoMapScript();
     }, [KakaoMapScript]);
@@ -154,35 +175,50 @@ function ScrMain() {
     return (
         <Container>
             <Header>
-                <Title> 요소수 재고 현황{loading ? "(Loading...)" : `(${scr.length})`} </Title>
+                <Title> 요소수 재고 현황{isLoading ? "(Loading...)" : `(${scrData?.length})`} </Title>
             </Header>
             <MapContainer>
-            <div id='myMap' style={{
-                width: '480px',
-                height: '600px'
-            }}>
-            </div>
+                <div id='myMap' style={{
+                    width: '480px',
+                    height: '600px'
+                }}>
+                </div>
             </MapContainer>
             <br />
 
-            <form>
-                <select>
-                    <option>이름</option>
-                    <option>주소</option>
-                    <option>재고</option>
-                </select>
-                <input placeholder="검색어 입력"></input>
-            </form>
+            <SearchForm>
+                <form>
+                    <select>
+                        <option className="optionItem">이름</option>
+                        <option className="optionItem">주소</option>
+                        <option className="optionItem">재고</option>
+                    </select>
+                    <input placeholder="검색어 입력"></input>
+                    <button>찾기</button>
+                </form>
+            </SearchForm>
 
-            {loading ? (
+
+            {isLoading ? (
                 <Loader>Loading...</Loader>
             ) : (
                 <ScrList>
-                    {scr?.map((scr) => (
+                    {scrData?.map((scr: IScr) => (
                         <Link to={{
                             pathname: `/${scr.code}`,
-                            state: { name: scr.name },
+                            state: {
+                                name: scr.name,
+                                inventory: scr.inventory,
+                                addr: scr.addr,
+                                price: scr.price,
+                                tel: scr.tel,
+                                regDt: scr.regDt,
+                                lat: scr.lat,
+                                lng: scr.lng,
+                                openTime: scr.openTime,
+                            },
                         }}>
+
                             <Scr key={scr.code}>
                                 <h1>{scr.name}</h1> <br />
                                 <h2>재고: {scr.inventory} L</h2>

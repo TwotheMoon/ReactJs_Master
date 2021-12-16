@@ -4,7 +4,7 @@ import ScrMain from "./routes/ScrMain";
 
 function Router() {
     return (
-        <BrowserRouter>
+        <BrowserRouter basename={process.env.PUBLIC_URL}>
             <Switch>
                 <Route path={"/:scrCode"}>
                     <DetailScr />

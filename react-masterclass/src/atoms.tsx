@@ -7,15 +7,16 @@ export interface IToDo {
     category: "TO_DO" | "DOING" | "DONE",  // 모든 string 타입이 아닌 세가지 타입중 하나
 }
 
-// 유저가 원하는 카테고리의 toDo 만 저장 하는 select state
-export const categoryState = atom({
-    key: "category",
-    default: "TO_DO",
-});
 
 export const toDoState = atom<IToDo[]>({
     key: "toDo",
     default: [],
+});
+
+// 유저가 원하는 카테고리의 toDo 만 저장 하는 select state
+export const categoryState = atom({
+    key: "category",
+    default: "TO_DO",
 });
 
 export const toDoSelector = selector({
