@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
-import { useSetRecoilState } from "recoil";
-import { toDoState } from "../atoms";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { categoryState, toDoState } from "../atoms";
 
 interface IForm {
     toDo: string;
@@ -8,10 +8,11 @@ interface IForm {
 
 function CreateToDo() {
     const setToDos = useSetRecoilState(toDoState);
+    const category = useRecoilValue(categoryState);
     const { register, handleSubmit, setValue } = useForm<IForm>();
 
     const handelValid = ({ toDo }: IForm) => {
-        setToDos((oldToDos) => [{ text: toDo, id: Date.now(), category: "TO_DO" }, ...oldToDos]);  // 기존 배열에 폼에서 넘어온 데이터 더해서 새로운 배열 생성
+        setToDos((oldToDos) => [{ text: toDo, id: Date.now(), category }, ...oldToDos]);  // 기존 배열에 폼에서 넘어온 데이터 더해서 새로운 배열 생성
         setValue("toDo", "");
     };
 
