@@ -25,17 +25,24 @@ const Boards = styled.div`
 
 function App() {
   const [toDos, setTodos] = useRecoilState(toDoState);
-  const onDragEnd = ({ draggableId, destination, source }: DropResult) => { // 드래그가 끝났을때 실행되는 함수
-    if (!destination) return; // 제자리에 드래그 했을 경우
+  const onDragEnd = (info: DropResult) => { // 드래그가 끝났을때 실행되는 함수
+    console.log(info);
+    const { destination, draggableId, source } = info;
+    if (destination?.droppableId === source.droppableId) {
+      // 같은 보드에서 움직임
+      setTodos((allBoards) => {
+        const boardCopy = [...allBoards[source.droppableId]]; // 객체내의 수정할 보드 배열 복사본
+        // 1. source.index 에 해당하는 아이템 제거
+        boardCopy.splice(source.index, 1);
+        // 2. 지운 아이템 다시 destination.index로 돌려두기
+        boardCopy.splice(destination?.index, 0, draggableId);
+        return {
+          ...allBoards,
+          [source.droppableId]: boardCopy
+        };// 위에서 수정한 보드 + 기존 나머지 2개 보드 객체로 리턴
+      })
+    }
 
-    // setTodos((oldToDos) => {
-    //   const copyToDos = [...oldToDos];
-    //   // 1. source.index 에 해당하는 아이템 제거
-    //   copyToDos.splice(source.index, 1);
-    //   // 2. 지운 아이템 다시 destination.index로 돌려두기
-    //   copyToDos.splice(destination?.index, 0, draggableId);
-    //   return copyToDos;
-    // })
   };
 
   return (
