@@ -7,7 +7,7 @@ interface IToDoState {  // 이후에 추가될 보드때문에 toDoState에 한�
 export const toDoState = atom<IToDoState>({
     key: "toDo",
     default: {
-        to_do: ["a", "b"],
+        "To Do": ["a", "b"],
         doing: ["c", "d", "e"],
         done: ["f"],
     },
