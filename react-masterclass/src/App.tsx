@@ -26,17 +26,18 @@ const Boards = styled.div`
 function App() {
   const [toDos, setTodos] = useRecoilState(toDoState);
   const onDragEnd = (info: DropResult) => { // 드래그가 끝났을때 실행되는 함수
-    console.log(info);
     const { destination, draggableId, source } = info;
     if (!destination) return; // 드래그 했지만 제자리라면
 
     if (destination?.droppableId === source.droppableId) { // 같은 보드에서 움직임
       setTodos((allBoards) => {
         const boardCopy = [...allBoards[source.droppableId]]; // 객체내의 수정할 보드 배열 복사본
+        // 옴기려하는 to do 객체 전체
+        const taskObj = boardCopy[source.index];
         // 1. source.index 에 해당하는 아이템 제거
         boardCopy.splice(source.index, 1);
         // 2. 지운 아이템 다시 destination.index로 돌려두기
-        boardCopy.splice(destination?.index, 0, draggableId);
+        boardCopy.splice(destination?.index, 0, taskObj);
 
         return {
           ...allBoards,
@@ -49,10 +50,11 @@ function App() {
       setTodos((allBoards) => {
         const sourceBoard = [...allBoards[source.droppableId]]; // 드래그에 의해 삭제할 요소가 담긴 보드
         const destinationBoard = [...allBoards[destination.droppableId]]; // 드래그에 의해 추가될 요소가 담긴 보드
+        const taskObj = sourceBoard[source.index];
         //1. 이동 전 보드에서 요소 삭제
         sourceBoard.splice(source.index, 1);
         // 2. 이동 후 보드에서 요소 추가
-        destinationBoard.splice(destination?.index, 0, draggableId);
+        destinationBoard.splice(destination?.index, 0, taskObj);
 
         return {
           ...allBoards,
