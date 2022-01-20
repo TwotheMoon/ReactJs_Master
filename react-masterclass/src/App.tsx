@@ -1,14 +1,15 @@
 import styled from "styled-components";
-import { motion, useMotionValue, useTransform } from "framer-motion";
+import { motion, useMotionValue, useTransform, useViewportScroll } from "framer-motion";
 import { useEffect } from "react";
 
 
-const Wrapper = styled.div`
+const Wrapper = styled(motion.div)`
   width: 100vw;
-  height: 100vh;
+  height: 500vh;
   display: flex;
   justify-content: center;
   align-items: center;
+;
 `;
 
 const Box = styled(motion.div)`
@@ -21,12 +22,21 @@ const Box = styled(motion.div)`
 
 function App() {
   const x = useMotionValue(0);
-  const scale = useTransform(x, [-800, 0, 800], [2, 1, 0.1]);
-  // 변하는 요소, 입력 값(input), 값 컨버트 후 출력값[output]
+  const rotateZ = useTransform(x, [-800, 800], [-360, 360]);
+  const gradient = useTransform(x,
+    [-800, 0, 800],
+    [
+      "linear-gradient(135deg, rgb(0, 210, 238), rgb(0, 83, 238))",
+      "linear-gradient(135deg, rgb(238, 0, 153), rgb(221, 0, 238))",
+      "linear-gradient(135deg, rgb(0, 238, 155), rgb(238, 178, 0))",
+    ]
+  );
+  const { scrollYProgress } = useViewportScroll();
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 5])
   return (
-    <Wrapper>
+    <Wrapper style={{ background: gradient }}>
       <Box
-        style={{ x, scale }}
+        style={{ x, rotateZ, scale }}
         drag="x"
         dragSnapToOrigin
       />
