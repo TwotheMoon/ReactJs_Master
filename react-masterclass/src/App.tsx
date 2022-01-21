@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
 import Header from "./Routes/Components/Header";
 import Home from "./Routes/Home";
 import Search from "./Routes/Search";
+import Start from "./Routes/Start";
 import Tv from "./Routes/Tv";
 
 function App() {
@@ -15,6 +16,9 @@ function App() {
         </Route>
         <Route path="/search">
           <Search />
+        </Route>
+        <Route path="/start">
+          <Start />
         </Route>
         <Route path="/">
           <Home />
