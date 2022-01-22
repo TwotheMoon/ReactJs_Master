@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import styled from "styled-components";
+import { moveEmitHelpers } from "typescript";
 import { getMovies, IGetMoviesResult } from "../api";
 import { makeImagePath } from "../utils";
 
@@ -44,8 +45,10 @@ const Row = styled(motion.div)`
     position: absolute;
     width: 100%;
 `;
-const Box = styled(motion.div)`
-    background-color: white;
+const Box = styled(motion.div) <{ bgPhoto: string }>`
+    background-image: url(${(props) => props.bgPhoto});
+    background-size: cover;
+    background-position: center center;
     height: 200px;
     color: red;
     font-size: 68px;
@@ -61,11 +64,23 @@ const rowVariants = {
     exiting: {
         x: -window.innerWidth - 5,
     }
-}
+};
+const offset = 6;
+
 function Home() {
     const { data, isLoading } = useQuery<IGetMoviesResult>(["movies", "nowPlaying"], getMovies);
     const [index, setIndex] = useState(0);
-    const increaseIndex = () => setIndex((prev) => prev + 1);
+    const [leaving, setLeaving] = useState(false);
+    const increaseIndex = () => {
+        if (data) { // 만약 data가 없을때 오류 방지를 위해
+            if (leaving) return;
+            toggleLeaving();
+            const totalMovies = data?.results.length - 1; // 메인 영화 1개 빼고
+            const maxIndex = Math.floor(totalMovies / offset) - 1; // 실수가 나올 수 도 있으니 무조건 내림 처리 (추가 1 ~ 2개 영화 안보이기)
+            setIndex((prev) => prev === maxIndex ? 0 : prev + 1);
+        }
+    };
+    const toggleLeaving = () => setLeaving((prev) => !prev);
     return (
         <Wrapper>{isLoading ? (
             <Loader>Loading...</Loader>
@@ -76,7 +91,7 @@ function Home() {
                     <Overview>{data?.results[0].overview}</Overview>
                 </Banner>
                 <Slider>
-                    <AnimatePresence>
+                    <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
                         <Row
                             variants={rowVariants}
                             initial="hidden"
@@ -85,7 +100,11 @@ function Home() {
                             transition={{ type: "tween", duration: 1 }}
                             key={index}
                         >
-                            {[1, 2, 3, 4, 5, 6].map((i) => <Box key={i}>{i}</Box>)}
+                            {data?.results.slice(1)
+                                .slice(offset * index, offset * index + offset)
+                                .map((movie) => (
+                                    <Box bgPhoto={makeImagePath(movie.backdrop_path, "w500")} key={movie.id} />
+                                ))}
                         </Row>
                     </AnimatePresence>
                 </Slider>
