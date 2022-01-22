@@ -52,6 +52,12 @@ const Box = styled(motion.div) <{ bgPhoto: string }>`
     height: 200px;
     color: red;
     font-size: 68px;
+    &:first-child{
+        transform-origin: center left;   /*{첫번째 box만 애니메이션 중심 왼쪽 중앙}*/
+    }
+    &:last-child{
+        transform-origin: center right; /*{마지막 box만 애니메이션 중심 왼쪽 중앙}*/
+    }
 `;
 
 const rowVariants = {
@@ -65,6 +71,21 @@ const rowVariants = {
         x: -window.innerWidth - 5,
     }
 };
+const BoxVariants = {
+    normal: {
+        scale: 1,
+    },
+    hover: {
+        scale: 1.3,
+        y: -50,
+        transition: {
+            delay: 0.3,
+            duration: 0.3,
+            type: "tween",
+        }
+    }
+};
+
 const offset = 6;
 
 function Home() {
@@ -103,7 +124,14 @@ function Home() {
                             {data?.results.slice(1)
                                 .slice(offset * index, offset * index + offset)
                                 .map((movie) => (
-                                    <Box bgPhoto={makeImagePath(movie.backdrop_path, "w500")} key={movie.id} />
+                                    <Box
+                                        key={movie.id}
+                                        whileHover="hover"
+                                        initial="normal"
+                                        variants={BoxVariants}
+                                        transition={{ type: "tween" }}
+                                        bgPhoto={makeImagePath(movie.backdrop_path, "w500")}
+                                    />
                                 ))}
                         </Row>
                     </AnimatePresence>
