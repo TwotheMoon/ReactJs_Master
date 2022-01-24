@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useQuery } from "react-query";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { getMovies, IGetMoviesResult } from "../api";
 import { makeImagePath } from "../utils";
@@ -103,6 +104,11 @@ const SignUpBtn = styled.button`
 
 function SignUp() {
     const { data } = useQuery<IGetMoviesResult>(["movies", "nowPlaying"], getMovies);
+    const [allChecked, setAllChecked] = useState(false);
+    const onAllCheck = () => {
+        setAllChecked((prev) => !prev);
+    }
+
     return (
         <Banner bgPhoto={makeImagePath(data?.results[1].backdrop_path || "")} >
             <SignUpWrap>
@@ -115,12 +121,36 @@ function SignUp() {
                     <input placeholder="영문, 숫자, 특문 중 2개 조합 10자이상"></input>
                 </InputWrap>
                 <CheckBoxWrap>
-                    <input type="checkbox" id="allChk" />
-                    <label htmlFor="allChk"> 모두 동의하기 </label>
+                    <input onClick={onAllCheck} type="checkbox" id="allChk" />
+                    <label htmlFor="allChk"> 전체 약관에 동의합니다. </label>
                     <hr />
+                    {allChecked ?
+                        <>
+                            <input type="checkbox" id="1stChk" checked={allChecked} />
+                            <label htmlFor="1stChk"> 만 14세 이상입니다. </label> <br />
+                            <input type="checkbox" id="2ndChk" checked={allChecked} />
+                            <label htmlFor="2ndChk"> 서비스 이용약관에 동의합니다(필수) </label><br />
+                            <input type="checkbox" id="3rdChk" checked={allChecked} />
+                            <label htmlFor="3rdChk"> 개인정보 수집 및 이용에 대한 안내에 동의합니다(필수) </label><br />
+                            <input type="checkbox" id="4thChk" checked={allChecked} />
+                            <label htmlFor="4thChk"> 신작 알림 이벤트 정보 수신에 동의합니다(선택) </label><br />
+                        </>
+                        :
+                        <>
+                            <input type="checkbox" id="1stChk" />
+                            <label htmlFor="1stChk"> 만 14세 이상입니다. </label> <br />
+                            <input type="checkbox" id="2ndChk" />
+                            <label htmlFor="2ndChk"> 서비스 이용약관에 동의합니다(필수) </label><br />
+                            <input type="checkbox" id="3rdChk" />
+                            <label htmlFor="3rdChk"> 개인정보 수집 및 이용에 대한 안내에 동의합니다(필수) </label><br />
+                            <input type="checkbox" id="4thChk" />
+                            <label htmlFor="4thChk"> 신작 알림 이벤트 정보 수신에 동의합니다(선택) </label><br />
+                        </>
+                    }
                 </CheckBoxWrap>
-                <SignUpBtn>계정 생성하기</SignUpBtn>
-
+                <Link to="/signIn">
+                    <SignUpBtn>계정 생성하기</SignUpBtn>
+                </Link>
             </SignUpWrap>
         </Banner >
     );

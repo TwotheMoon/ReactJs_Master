@@ -49,6 +49,7 @@ const Search = styled.span`
   display: flex;
   align-items: center;
   position: relative;
+  cursor: pointer;
   svg {
     height: 25px;
   }
@@ -95,7 +96,6 @@ const navVariants = {
         backgroundColor: "rgba(0, 0, 0, 1)"
     },
 }
-
 const SignupBtn = styled(motion.button)`  
     font-weight: bold;
     width: 100px;
@@ -104,6 +104,10 @@ const SignupBtn = styled(motion.button)`
     border: none;
     border-radius: 20px;
     cursor: pointer;
+    transition: 0.5s;
+    &:hover{
+        background-color: rgba(255, 4, 88, 0.7);
+    }
 `;
 
 function Header() {

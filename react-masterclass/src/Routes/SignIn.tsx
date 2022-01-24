@@ -8,6 +8,7 @@ import googleLogo from "../img/googleLogo.svg";
 import tweeterLogo from "../img/tweeterLogo.svg";
 import appleLogo from "../img/appleLogo.svg";
 import lineLogo from "../img/lineLogo.svg";
+import { Link } from "react-router-dom";
 
 const Banner = styled.div < { bgPhoto: string }>`
     height: 100vh;
@@ -119,7 +120,9 @@ function SignIn() {
                         <input placeholder="이메일 (example@gmail.com)"></input>
                         <input placeholder="비밀번호"></input>
                     </InputWrap>
-                    <SignInBtn>로그인</SignInBtn>
+                    <Link to="/">
+                        <SignInBtn>로그인</SignInBtn>
+                    </Link>
                     <AnotherSignIn> 다른 방법으로 로그인하기 </AnotherSignIn>
                     <SnsLogoWrap>
                         <img alt="kako" src={kakoLogo} />
