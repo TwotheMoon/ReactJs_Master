@@ -19,9 +19,6 @@ function App() {
         <Route path="/search">
           <Search />
         </Route>
-        <Route path="/start">
-          <Start />
-        </Route>
         <Route path="/signUp">
           <SignUp />
         </Route>
