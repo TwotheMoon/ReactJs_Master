@@ -2,7 +2,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import styled from "styled-components";
-import { moveEmitHelpers } from "typescript";
 import { getMovies, IGetMoviesResult } from "../api";
 import { makeImagePath } from "../utils";
 
