@@ -212,6 +212,38 @@ const BigOverview = styled.p`
     top: -80px;
     position: relative;
 `;
+const SimWrap = styled.div`
+    display: flex;
+    width: 100%;
+    margin-top: 10px;
+    position: relative;
+    top: -70px;
+`;
+const SimInfo = styled.span`
+    font-family: "GmarketSansMedium";
+    font-weight: bold;
+    padding-left: 10px;
+    position: relative;
+    top: -70px;
+`;
+const SimCover = styled.div`
+    width: 100%;
+    height: 250px;
+    margin: 0px 10px;
+    background-size: cover;
+    background-position: center center;
+    position: relative;
+`;
+const SimTitle = styled.div`
+    font-family: "GmarketSansLight";
+    font-weight: bold;
+    position: absolute;
+    bottom: 15px;
+    left: 0px;
+    right: 0px;
+    margin: 0 auto;
+    text-align: center;
+`;
 const offset = 6;
 let selectMovieId = 0;
 function Home() {
@@ -253,7 +285,6 @@ function Home() {
     const onOverlayClick = () => history.push("/");
     const clickedMovie = bigMovieMatch?.params.movieId &&
         data?.results.find((movie) => String(movie.id) === bigMovieMatch.params.movieId);
-    console.log(simData?.results.slice(1));
     return (
         <Wrapper>{isLoading ? (
             <Loader>Loading...</Loader>
@@ -333,6 +364,14 @@ function Home() {
                                     <BigTitle>{clickedMovie.title}</BigTitle>
                                     <BigOverview>{clickedMovie.overview}</BigOverview>
                                 </>}
+                                <SimInfo>이런 영화는 어때요?</SimInfo>
+                                <SimWrap>
+                                    {simData?.results.slice(0, 4).map((list) => (
+                                        <SimCover style={{ backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(list.backdrop_path)})` }}>
+                                            <SimTitle>{list.title}</SimTitle>
+                                        </SimCover>
+                                    ))}
+                                </SimWrap>
                             </BigMovie>
                         </>
                         :
