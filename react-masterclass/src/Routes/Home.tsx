@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useQuery } from "react-query";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
-import { getMovies, IGetMoviesResult } from "../api";
+import { getMovies, getSimilarMovies, IGetMoviesResult } from "../api";
 import { makeImagePath } from "../utils";
 
 const Wrapper = styled.div`
@@ -28,10 +28,13 @@ const Banner = styled.div < { bgPhoto: string }>`
 `;
 const Title = styled.h2`
     font-size: 68px;
+    font-family: "GmarketSansMedium";
+    font-weight: bold;
 `;
 const Overview = styled.p`
     font-size: 25px;
     width: 50%;
+    font-family: "GmarketSansLight";
 `;
 const SliderBtn = styled.button`
     width: 40px;
@@ -55,7 +58,7 @@ const Slider = styled(motion.div)`
         top: -50px;
         left: 20px;
         font-weight: bold;
-        font-size: 30px;
+        font-size: 28px;
     }
 `;
 const Row = styled(motion.div)`
@@ -139,7 +142,7 @@ const Overlay = styled(motion.div)`
 const BigMovie = styled(motion.div)`
     position: absolute;
     width: 40vw;
-    height: 70vh;
+    height: 100vh;
     left: 0;
     right: 0;
     margin: 0 auto;
@@ -158,7 +161,50 @@ const BigTitle = styled.h3`
     padding: 20px;
     font-size: 36px;
     position: relative;
-    top: -80px;
+    top: -120px;
+    `;
+const IconWrap = styled.div`
+    padding-top: 10px;
+    padding-left: 10px;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 20px;
+    `;
+const Icons = styled.div`
+    width: 100%;
+    display: flex;
+    
+`;
+const IconCircle = styled(motion.div)`
+    margin-left: 20px;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    &:hover{
+        background-color: rgba(255, 255, 255, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.7);
+    }
+    `;
+const BigInfo = styled.span`
+    width: 100%;
+    margin-right: 30px;
+    padding-top: 10px;
+    padding-left: 120px;
+    font-family: "GmarketSansLight";
+    font-weight: bold;
+    font-size: 13px;
+    span{
+        font-family: "GmarketSansMedium";
+        font-weight: bold;
+    }
 `;
 const BigOverview = styled.p`
     padding: 20px;
@@ -166,14 +212,14 @@ const BigOverview = styled.p`
     top: -80px;
     position: relative;
 `;
-
 const offset = 6;
-
+let selectMovieId = 0;
 function Home() {
     const history = useHistory();
     const bigMovieMatch = useRouteMatch<{ movieId: string }>("/movies/:movieId");
     const { scrollY } = useViewportScroll();
     const { data, isLoading } = useQuery<IGetMoviesResult>(["movies", "nowPlaying"], getMovies);
+    const { data: simData } = useQuery<IGetMoviesResult>(["simMovies", selectMovieId], () => getSimilarMovies(selectMovieId));
     const [index, setIndex] = useState(0);
     const [leaving, setLeaving] = useState(false);
     const [back, setBack] = useState(false);
@@ -202,10 +248,12 @@ function Home() {
     const toggleLeaving = () => setLeaving((prev) => !prev);
     const onBoxClicked = (movieId: number) => {
         history.push(`/movies/${movieId}`);
+        selectMovieId = movieId;
     };
     const onOverlayClick = () => history.push("/");
     const clickedMovie = bigMovieMatch?.params.movieId &&
         data?.results.find((movie) => String(movie.id) === bigMovieMatch.params.movieId);
+    console.log(simData?.results.slice(1));
     return (
         <Wrapper>{isLoading ? (
             <Loader>Loading...</Loader>
@@ -215,6 +263,7 @@ function Home() {
                     <Title>{data?.results[0].title}</Title>
                     <Overview>{data?.results[0].overview}</Overview>
                 </Banner>
+
                 <Slider>
                     <h1>지금 극장에서 만나요! </h1>
                     <AnimatePresence custom={back} initial={false} onExitComplete={toggleLeaving}>
@@ -249,6 +298,7 @@ function Home() {
                     </AnimatePresence>
                     <SliderBtn onClick={increaseIndex}><i className="fas fa-chevron-right fa-2x"></i></SliderBtn>
                 </Slider>
+
                 <AnimatePresence>
                     {bigMovieMatch ?
                         <>
@@ -263,6 +313,23 @@ function Home() {
                             >
                                 {clickedMovie && <>
                                     <BigCover style={{ backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(clickedMovie.backdrop_path, "w500")})` }} />
+                                    <IconWrap>
+                                        <Icons>
+                                            <IconCircle>
+                                                <i className="fas fa-plus"></i>
+                                            </IconCircle>
+                                            <IconCircle>
+                                                <i className="far fa-thumbs-up"></i>
+                                            </IconCircle>
+                                            <IconCircle>
+                                                <i className="far fa-thumbs-down"></i>
+                                            </IconCircle>
+                                        </Icons>
+                                        <BigInfo>
+                                            <span>개봉일:</span> {clickedMovie.release_date} <br />
+                                            <span>평점:</span> {clickedMovie.vote_average}
+                                        </BigInfo>
+                                    </IconWrap>
                                     <BigTitle>{clickedMovie.title}</BigTitle>
                                     <BigOverview>{clickedMovie.overview}</BigOverview>
                                 </>}
@@ -273,8 +340,9 @@ function Home() {
                     }
                 </AnimatePresence>
             </>
-        )}
-        </Wrapper>
+        )
+        }
+        </Wrapper >
     );
 }
 

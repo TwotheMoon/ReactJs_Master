@@ -14,6 +14,8 @@ const Nav = styled(motion.nav)`
   font-size: 14px;
   padding: 20px 60px;
   color: white;
+  font-family: "GmarketSansMedium";
+    font-weight: bold;
 `;
 const Col = styled.div`
   display: flex;
@@ -169,12 +171,12 @@ function Header() {
                 <Items>
                     <Item>
                         <Link to="/">
-                            Home {homeMatch?.isExact && <Circle layoutId="circle" />}
+                            홈 {homeMatch?.isExact && <Circle layoutId="circle" />}
                         </Link>
                     </Item>
                     <Item>
                         <Link to="/tv">
-                            Tv Shows {tvMatch && <Circle layoutId="circle" />}
+                            TV 시리즈 {tvMatch && <Circle layoutId="circle" />}
                         </Link>
                     </Item>
                     <Item>
