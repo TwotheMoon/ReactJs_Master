@@ -8,6 +8,8 @@ import { makeImagePath } from "../utils";
 
 const Wrapper = styled.div`
 background-color: black;
+overflow-x: hidden;
+overflow-y: hidden;
 `;
 const Loader = styled.div`
     height: 20vh;
@@ -31,12 +33,31 @@ const Overview = styled.p`
     font-size: 25px;
     width: 50%;
 `;
-
+const SliderBtn = styled.button`
+    width: 40px;
+    height: 200px;
+    z-index: 99;
+    background-color: rgba(255,255,255,0.4);
+    border: none;
+    cursor: pointer;
+    &:last-child{
+        position: absolute;
+        right: 0;
+    }
+`;
 const Slider = styled(motion.div)`
+    width: 100%;
     position: relative;
     top: -100px;
+    display: grid;
+    h1{
+        position: absolute;
+        top: -50px;
+        left: 20px;
+        font-weight: bold;
+        font-size: 30px;
+    }
 `;
-
 const Row = styled(motion.div)`
     display: grid;
     gap: 10px;
@@ -44,6 +65,7 @@ const Row = styled(motion.div)`
     margin-bottom: 5px;
     position: absolute;
     width: 100%;
+    padding: 0px 50px;
 `;
 const Box = styled(motion.div) <{ bgPhoto: string }>`
     background-image: url(${(props) => props.bgPhoto});
@@ -59,7 +81,6 @@ const Box = styled(motion.div) <{ bgPhoto: string }>`
     }
     cursor: pointer;
 `;
-
 const Info = styled(motion.div)`
     padding: 10px;
     background-color: ${(props) => props.theme.black.lighter};
@@ -72,17 +93,16 @@ const Info = styled(motion.div)`
         font-size: 18px;
     }
 `;
-
 const rowVariants = {
-    hidden: {
-        x: window.innerWidth + 5,
-    },
+    hidden: (back: boolean) => ({
+        x: back ? -window.innerWidth - 5 : window.innerWidth + 5,
+    }),
     visible: {
         x: 0,
     },
-    exiting: {
-        x: -window.innerWidth - 5,
-    }
+    exiting: (back: boolean) => ({
+        x: back ? window.innerWidth + 5 : -window.innerWidth - 5,
+    }),
 };
 const BoxVariants = {
     normal: {
@@ -98,7 +118,6 @@ const BoxVariants = {
         }
     }
 };
-
 const infoVariants = {
     hover: {
         opacity: 1,
@@ -109,7 +128,6 @@ const infoVariants = {
         }
     }
 }
-
 const Overlay = styled(motion.div)`
     position: fixed;
     top: 0;
@@ -118,7 +136,6 @@ const Overlay = styled(motion.div)`
     background-color: rgba(0, 0, 0, 0.5);
     opacity: 0;
 `;
-
 const BigMovie = styled(motion.div)`
     position: absolute;
     width: 40vw;
@@ -159,13 +176,27 @@ function Home() {
     const { data, isLoading } = useQuery<IGetMoviesResult>(["movies", "nowPlaying"], getMovies);
     const [index, setIndex] = useState(0);
     const [leaving, setLeaving] = useState(false);
+    const [back, setBack] = useState(false);
     const increaseIndex = () => {
         if (data) { // 만약 data가 없을때 오류 방지를 위해
             if (leaving) return;
+            setBack(false);
             toggleLeaving();
             const totalMovies = data?.results.length - 1; // 메인 영화 1개 빼고
             const maxIndex = Math.floor(totalMovies / offset) - 1; // 실수가 나올 수 도 있으니 무조건 내림 처리 (추가 1 ~ 2개 영화 안보이기)
             setIndex((prev) => prev === maxIndex ? 0 : prev + 1);
+            console.log(index);
+        }
+    };
+    const decreaseIndex = () => {
+        if (data) { // 만약 data가 없을때 오류 방지를 위해
+            if (leaving) return;
+            setBack(true);
+            toggleLeaving();
+            const totalMovies = data?.results.length - 1; // 메인 영화 1개 빼고
+            const maxIndex = Math.floor(totalMovies / offset) - 1; // 실수가 나올 수 도 있으니 무조건 내림 처리 (추가 1 ~ 2개 영화 안보이기)
+            setIndex((prev) => prev === 0 ? maxIndex : prev - 1);
+            console.log(index);
         }
     };
     const toggleLeaving = () => setLeaving((prev) => !prev);
@@ -180,14 +211,17 @@ function Home() {
             <Loader>Loading...</Loader>
         ) : (
             <>
-                <Banner onClick={increaseIndex} bgPhoto={makeImagePath(data?.results[0].backdrop_path || "")}>
+                <Banner bgPhoto={makeImagePath(data?.results[0].backdrop_path || "")}>
                     <Title>{data?.results[0].title}</Title>
                     <Overview>{data?.results[0].overview}</Overview>
                 </Banner>
                 <Slider>
-                    <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
+                    <h1>지금 극장에서 만나요! </h1>
+                    <AnimatePresence custom={back} initial={false} onExitComplete={toggleLeaving}>
+                        <SliderBtn onClick={decreaseIndex}><i className="fas fa-chevron-left fa-2x"></i></SliderBtn>
                         <Row
                             variants={rowVariants}
+                            custom={back}
                             initial="hidden"
                             animate="visible"
                             exit="exiting"
@@ -213,6 +247,7 @@ function Home() {
                                 ))}
                         </Row>
                     </AnimatePresence>
+                    <SliderBtn onClick={increaseIndex}><i className="fas fa-chevron-right fa-2x"></i></SliderBtn>
                 </Slider>
                 <AnimatePresence>
                     {bigMovieMatch ?
