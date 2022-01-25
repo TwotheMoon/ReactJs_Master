@@ -30,3 +30,14 @@ export function getMovies() {
 export function getSimilarMovies(movieId: number) {
     return fetch(`${BASE_PATH}/movie/${movieId}/similar?api_key=${API_KEY}&language=ko`).then((response) => response.json());
 }
+
+export function getPopularMovies() {
+    return fetch(`${BASE_PATH}/movie/popular?api_key=${API_KEY}&language=ko&page=4`).then((response) => response.json());
+}
+
+export function getSearchMovies(keyword: string) {
+    return fetch(`${BASE_PATH}/search/movie?api_key=${API_KEY}&language=ko&query=${keyword}&include_adult=true`).then((response) => response.json());
+}
+export function getSearchTv(keyword: string) {
+    return fetch(`${BASE_PATH}/search/tv?api_key=${API_KEY}&language=ko&query=${keyword}&include_adult=true`).then((response) => response.json());
+}

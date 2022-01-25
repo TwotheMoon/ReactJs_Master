@@ -16,6 +16,7 @@ const Nav = styled(motion.nav)`
   color: white;
   font-family: "GmarketSansMedium";
     font-weight: bold;
+    z-index: 99;
 `;
 const Col = styled.div`
   display: flex;
@@ -119,7 +120,7 @@ interface IForm {
 }
 
 function Header() {
-    const homeMatch = useRouteMatch("/");
+    const homeMatch = useRouteMatch("/home");
     const tvMatch = useRouteMatch("/tv");
     const signInMatch = useRouteMatch("/signIn");
     const signUpMatch = useRouteMatch("/signUp");
@@ -155,7 +156,7 @@ function Header() {
             animate={navAnimation}
             initial={"top"}>
             <Col>
-                <Link to="/">
+                <Link to="/home">
                     <Logo
                         variants={logoVariants}
                         whileHover="active"
@@ -170,7 +171,7 @@ function Header() {
                 </Link>
                 <Items>
                     <Item>
-                        <Link to="/">
+                        <Link to="/home">
                             홈 {homeMatch?.isExact && <Circle layoutId="circle" />}
                         </Link>
                     </Item>

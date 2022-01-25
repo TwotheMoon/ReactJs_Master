@@ -25,8 +25,11 @@ function App() {
         <Route path="/signIn">
           <SignIn />
         </Route>
-        <Route path={["/", "/movies/:movieId"]}>
+        <Route path={["/home", "/movies/:movieId"]}>
           <Home />
+        </Route>
+        <Route path="/">
+          <Start />
         </Route>
       </Switch>
     </Router>
