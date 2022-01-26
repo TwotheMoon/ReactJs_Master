@@ -337,7 +337,7 @@ function Tv() {
                 </Banner>
 
                 <Slider onClick={() => { setClickSlider(1) }}>
-                    <h1>지금 핫한 TV 쇼! </h1>
+                    <h1>지금 핫한 TV 드라마 시리즈! </h1>
                     <AnimatePresence custom={back} initial={false} onExitComplete={toggleLeaving}>
                         <SliderBtn onClick={decreaseIndex}><i className="fas fa-chevron-left fa-2x"></i></SliderBtn>
                         <Row

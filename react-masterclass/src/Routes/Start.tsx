@@ -10,6 +10,7 @@ const Section = styled.div`
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
+
 `;
 const LogoImg = styled.img`
     width: 200px;
@@ -57,6 +58,7 @@ const BgVideo = styled.div`
     position: absolute;
     width: 100%;
     height: 100%;
+    overflow-y: hidden;
 `;
 
 function Start() {

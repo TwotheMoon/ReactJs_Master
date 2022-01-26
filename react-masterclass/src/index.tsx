@@ -28,6 +28,7 @@ time, mark, audio, video {
   font-size: 100%;
   font: inherit;
   vertical-align: baseline;
+
 }
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure,
@@ -61,6 +62,7 @@ body {
   color: ${(props) => props.theme.white.darker};
   line-height: 1.2;
   background-color: black;}
+
 a {
   text-decoration:none;
   color:inherit;
