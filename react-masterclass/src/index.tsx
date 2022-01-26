@@ -60,9 +60,7 @@ body {
   font-weight: 300;
   color: ${(props) => props.theme.white.darker};
   line-height: 1.2;
-  background-color: black;
-  font-family: 'Mukta', sans-serif;
-}
+  background-color: black;}
 a {
   text-decoration:none;
   color:inherit;
