@@ -32,7 +32,7 @@ export function getSimilarMovies(movieId: number) {
 }
 
 export function getPopularMovies() {
-    return fetch(`${BASE_PATH}/movie/popular?api_key=${API_KEY}&language=ko&page=4`).then((response) => response.json());
+    return fetch(`${BASE_PATH}/movie/popular?api_key=${API_KEY}&language=ko&page=10`).then((response) => response.json());
 }
 
 export function getSearchMovies(keyword: string) {

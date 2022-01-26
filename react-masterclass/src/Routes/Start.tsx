@@ -68,16 +68,14 @@ function Start() {
                     <ReactPlayer
                         className='react-player'
                         url={[
-                            'https://www.youtube.com/watch?v=JfVOs4VSpmA',
-                            'https://www.youtube.com/watch?v=u34gHaRiBIU',
                             'https://www.youtube.com/watch?v=AAnkc01ITpw',
-                            'https://www.youtube.com/watch?v=w0HgHet0sxg',
+                            'https://www.youtube.com/watch?v=NtkbmqOqY0c',
                         ]}
                         width='100%'
                         height='100%'
                         playing={true}
                         muted={true}
-                        controls={true}
+                        controls={false}
                         light={false}
                         style={{ zIndex: -1, position: "relative", opacity: 0.5 }}
                     />
