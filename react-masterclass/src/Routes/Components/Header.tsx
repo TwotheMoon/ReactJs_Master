@@ -79,17 +79,6 @@ const Input = styled(motion.input)`
     padding-left: 40px;
     color: white;
 `;
-const logoVariants = {
-    nomal: {
-        fillOpacity: 1,
-    },
-    active: {
-        fillOpacity: [0, 1, 0],
-        transition: {
-            repeat: 5,
-        }
-    },
-}
 const navVariants = {
     top: {
         backgroundColor: "rgba(0, 0, 0, 0)"

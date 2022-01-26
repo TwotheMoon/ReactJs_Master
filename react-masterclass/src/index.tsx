@@ -7,7 +7,6 @@ import { theme } from "./theme";
 import { createGlobalStyle } from "styled-components";
 import { QueryClient, QueryClientProvider } from "react-query";
 import '@fortawesome/fontawesome-free/js/all.js'
-import axios from 'axios';
 
 const GlobalStyle = createGlobalStyle`
 html, body, div, span, applet, object, iframe,
