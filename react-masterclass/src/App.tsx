@@ -8,24 +8,27 @@ import Start from "./Routes/Start";
 import Tv from "./Routes/Tv";
 
 function App() {
-
   return (
     <Router>
-      <Header />
       <Switch>
-        <Route path="/tv">
-          <Tv />
-        </Route>
         <Route path="/search">
+          <Header />
           <Search />
         </Route>
         <Route path="/signUp">
+          <Header />
           <SignUp />
         </Route>
         <Route path="/signIn">
+          <Header />
           <SignIn />
         </Route>
+        <Route path={["/tv", "/tv/:tvId"]}>
+          <Header />
+          <Tv />
+        </Route>
         <Route path={["/home", "/movies/:movieId"]}>
+          <Header />
           <Home />
         </Route>
         <Route path="/">

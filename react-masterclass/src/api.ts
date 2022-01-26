@@ -9,6 +9,8 @@ interface IMovie {
     overview: string;
     release_date: string;
     vote_average: string;
+    name?: string;
+    first_air_date?: string;
 
 }
 
@@ -33,6 +35,16 @@ export function getSimilarMovies(movieId: number) {
 
 export function getPopularMovies() {
     return fetch(`${BASE_PATH}/movie/popular?api_key=${API_KEY}&language=ko&page=10`).then((response) => response.json());
+}
+
+export function getTV() {
+    return fetch(`${BASE_PATH}/tv/popular?api_key=${API_KEY}&language=ko`).then((response) => response.json());
+}
+export function getPopularTV() {
+    return fetch(`${BASE_PATH}/tv/popular?api_key=${API_KEY}&language=ko&page=6`).then((response) => response.json());
+}
+export function getSimilarTV(tvId: number) {
+    return fetch(`${BASE_PATH}/tv/${tvId}/similar?api_key=${API_KEY}&language=ko`).then((response) => response.json());
 }
 
 export function getSearchMovies(keyword: string) {
