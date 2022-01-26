@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import ReactPlayer from 'react-player'
 
 const Section = styled.div` 
     width: 100%;
@@ -9,11 +10,11 @@ const Section = styled.div`
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
-    padding-left: 50px;
 `;
 const LogoImg = styled.img`
     width: 200px;
     height: 191px;
+    margin-left: 50px;
 `;
 
 const Title = styled.h1`
@@ -21,12 +22,14 @@ font-family: "GmarketSansMedium";
     font-weight: bold;
     margin-top: 10px;
     font-size: 23px;
+    margin-left: 50px;
 `;
 
 const Description = styled.p`
     margin-top: 20px;
     font-family: "GmarketSansLight";
     font-weight: bold;
+    margin-left: 50px;
 `;
 
 const Button = styled.button`
@@ -40,6 +43,9 @@ const Button = styled.button`
     font-weight: bold;
     font-size: 15px;
     color: white; 
+    margin-left: 50px;
+    position: relative;
+    z-index: 99;
     cursor: pointer;
     transition: 1s;
     &:hover{
@@ -47,11 +53,35 @@ const Button = styled.button`
     }
 `;
 
+const BgVideo = styled.div`
+    position: absolute;
+    width: 100%;
+    height: 100%;
+`;
+
 function Start() {
 
     return (
         <>
             <Section>
+                <BgVideo>
+                    <ReactPlayer
+                        className='react-player'
+                        url={[
+                            'https://www.youtube.com/watch?v=JfVOs4VSpmA',
+                            'https://www.youtube.com/watch?v=u34gHaRiBIU',
+                            'https://www.youtube.com/watch?v=AAnkc01ITpw',
+                            'https://www.youtube.com/watch?v=w0HgHet0sxg',
+                        ]}
+                        width='100%'
+                        height='100%'
+                        playing={true}
+                        muted={true}
+                        controls={true}
+                        light={false}
+                        style={{ zIndex: -1, position: "relative", opacity: 0.5 }}
+                    />
+                </BgVideo>
                 <LogoImg src={`${process.env.PUBLIC_URL}/asset/monviewLogoVer1.png`} />
                 <Title>영화,드라마,예능,다큐멘터리를 무제한으로!</Title>
                 <Description>
