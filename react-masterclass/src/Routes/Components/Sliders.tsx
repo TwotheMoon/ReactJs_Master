@@ -273,8 +273,8 @@ function Sliders({ data, title, sliderNum, clickSlider }: any) {
                             .slice(offset * index, offset * index + offset)
                             .map((movie: any) => (
                                 <Box
-                                    layoutId={movie.id + ""}
-                                    key={movie.id}
+                                    layoutId={movie.id + "" + sliderNum}
+                                    key={movie.id + sliderNum}
                                     whileHover="hover"
                                     initial="normal"
                                     variants={BoxVariants}
@@ -300,7 +300,7 @@ function Sliders({ data, title, sliderNum, clickSlider }: any) {
                         />
                         <BigMovie
                             style={{ top: scrollY.get() + 100, }}
-                            layoutId={bigMovieMatch.params.movieId}
+                            layoutId={bigMovieMatch.params.movieId + sliderNum}
                         >
                             {clickedMovie &&
                                 <>

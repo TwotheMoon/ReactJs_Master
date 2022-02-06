@@ -279,7 +279,7 @@ function TvSliders({ data, title, sliderNum, clickSlider }: any) {
                             .slice(offset * index, offset * index + offset)
                             .map((tv: any) => (
                                 <Box
-                                    layoutId={tv.id + ""}
+                                    layoutId={tv.id + "" + sliderNum}
                                     key={tv.id}
                                     whileHover="hover"
                                     initial="normal"
@@ -306,7 +306,7 @@ function TvSliders({ data, title, sliderNum, clickSlider }: any) {
                         />
                         <BigMovie
                             style={{ top: scrollY.get() + 100, }}
-                            layoutId={bigMovieMatch.params.tvId}
+                            layoutId={bigMovieMatch.params.tvId + sliderNum}
                         >
                             {clickedMovie && <>
                                 <BigCover style={{ backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(clickedMovie.backdrop_path, "w500")})` }} />
@@ -344,7 +344,6 @@ function TvSliders({ data, title, sliderNum, clickSlider }: any) {
                     null
                 }
             </AnimatePresence>
-
         </>
     );
 }

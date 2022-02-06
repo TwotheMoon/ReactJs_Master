@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery } from "react-query";
 import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
-import { getMovies, getTopRatedMovies, getUpcomingMovies, IGetMoviesResult } from "../api";
+import { getMovies, getPopularMovies, getTopRatedMovies, getUpcomingMovies, IGetMoviesResult } from "../api";
 import { makeImagePath } from "../utils";
 import Sliders from "./Components/Sliders";
 
@@ -41,6 +41,7 @@ const SliderWrap = styled.div``;
 
 function Home() {
     const { data, isLoading } = useQuery<IGetMoviesResult>(["movies", "nowPlaying"], getMovies);
+    const { data: popular } = useQuery<IGetMoviesResult>(["popularMovies", "popular"], getPopularMovies);
     const { data: topLated } = useQuery<IGetMoviesResult>(["topLatedMovies", "topLated"], getTopRatedMovies);
     const { data: upComing } = useQuery<IGetMoviesResult>(["upComingMovies", "upComing"], getUpcomingMovies);
     const [clickSlider, setClickSlider] = useState(0);
@@ -54,13 +55,16 @@ function Home() {
                     <Overview>{data?.results[0].overview}</Overview>
                 </Banner>
                 <SliderWrap onClick={() => setClickSlider(1)}>
-                    <Sliders data={data} title="지금 바로 최신영화를 만나세요!" sliderNum={1} clickSlider={clickSlider} />
+                    <Sliders data={popular} title="지금 바로 최신영화를 만나세요!" sliderNum={1} clickSlider={clickSlider} />
                 </SliderWrap>
                 <SliderWrap onClick={() => setClickSlider(2)}>
-                    <Sliders data={topLated} title="여러 사람들이 극찬한 영화!" sliderNum={2} clickSlider={clickSlider} />
+                    <Sliders data={data} title="극장에서 상영중!" sliderNum={2} clickSlider={clickSlider} />
                 </SliderWrap>
                 <SliderWrap onClick={() => setClickSlider(3)}>
-                    <Sliders data={upComing} title="곧 영화관에서 만나요!" sliderNum={3} clickSlider={clickSlider} />
+                    <Sliders data={topLated} title="여러 사람들이 극찬한 영화 최고평점 영화들!" sliderNum={3} clickSlider={clickSlider} />
+                </SliderWrap>
+                <SliderWrap onClick={() => setClickSlider(4)}>
+                    <Sliders data={upComing} title="곧 영화관에서 만나요!" sliderNum={4} clickSlider={clickSlider} />
                 </SliderWrap>
             </>
         )

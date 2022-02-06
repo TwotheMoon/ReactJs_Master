@@ -34,6 +34,9 @@ export function getSimilarMovies(movieId: number) {
 export function getTopRatedMovies() {
     return fetch(`${BASE_PATH}/movie/top_rated?api_key=${API_KEY}&language=ko`).then((response) => response.json());
 }
+export function getPopularMovies() {
+    return fetch(`${BASE_PATH}/movie/popular?api_key=${API_KEY}&language=ko`).then((response) => response.json());
+}
 export function getUpcomingMovies() {
     return fetch(`${BASE_PATH}/movie/upcoming?api_key=${API_KEY}&language=ko`).then((response) => response.json());
 }
@@ -49,6 +52,9 @@ export function getTopRatedTV() {
 }
 export function getAiringTV() {
     return fetch(`${BASE_PATH}/tv/airing_today?api_key=${API_KEY}&language=ko`).then((response) => response.json());
+}
+export function getLatestTV() {
+    return fetch(`${BASE_PATH}/tv/popular?api_key=${API_KEY}&language=ko&page=2`).then((response) => response.json());
 }
 
 export function getSearchMovies(keyword: string) {
