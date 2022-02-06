@@ -274,7 +274,6 @@ function Tv() {
     const [leaving2, setLeaving2] = useState(false);
     const [back2, setBack2] = useState(false);
     const [clickSlider, setClickSlider] = useState(0);
-    console.log(data);
     const increaseIndex = () => {
         if (data) { // 만약 data가 없을때 오류 방지를 위해
             if (leaving) return;

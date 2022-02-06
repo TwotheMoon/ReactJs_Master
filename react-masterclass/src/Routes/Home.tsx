@@ -1,7 +1,7 @@
-import { motion } from "framer-motion";
+import { useState } from "react";
 import { useQuery } from "react-query";
 import styled from "styled-components";
-import { getMovies, getPopularMovies, IGetMoviesResult } from "../api";
+import { getMovies, getTopRatedMovies, getUpcomingMovies, IGetMoviesResult } from "../api";
 import { makeImagePath } from "../utils";
 import Sliders from "./Components/Sliders";
 
@@ -36,13 +36,10 @@ const Overview = styled.p`
     font-family: "GmarketSansLight";
 `;
 
-
-
-
 function Home() {
     const { data, isLoading } = useQuery<IGetMoviesResult>(["movies", "nowPlaying"], getMovies);
-    const { data: popularData } = useQuery<IGetMoviesResult>(["popualrMovies", "popular"], getPopularMovies);
-
+    const { data: topLated } = useQuery<IGetMoviesResult>(["topLatedMovies", "topLated"], getTopRatedMovies);
+    const { data: upComing } = useQuery<IGetMoviesResult>(["upComingMovies", "upComing"], getUpcomingMovies);
 
     return (
         <Wrapper>{isLoading ? (
@@ -54,8 +51,9 @@ function Home() {
                     <Overview>{data?.results[0].overview}</Overview>
                 </Banner>
 
-                <Sliders data={data} title="지금 바로 최신영화를 만나세요!" />
-                <Sliders data={popularData} title="여러 사람들이 극찬한 영화!" />
+                <Sliders data={data} title="지금 바로 최신영화를 만나세요!" clickSlider={1} />
+                <Sliders data={topLated} title="여러 사람들이 극찬한 영화!" clickSlider={2} />
+                <Sliders data={upComing} title="곧 개봉합니다!" clickSlider={3} />
             </>
         )
         }

@@ -227,8 +227,6 @@ function Sliders({ data, title }: any) {
     const [index, setIndex] = useState(0);
     const [leaving, setLeaving] = useState(false);
     const [back, setBack] = useState(false);
-    const [clickSlider, setClickSlider] = useState(0);
-
     const increaseIndex = () => {
         if (data) { // 만약 data가 없을때 오류 방지를 위해
             if (leaving) return;
@@ -249,7 +247,6 @@ function Sliders({ data, title }: any) {
             setIndex((prev) => prev === 0 ? maxIndex : prev - 1);
         }
     };
-
     const toggleLeaving = () => setLeaving((prev) => !prev);
     const onBoxClicked = (movieId: number) => {
         history.push(`/movies/${movieId}`);
@@ -260,7 +257,7 @@ function Sliders({ data, title }: any) {
         data?.results.find((movie: any) => String(movie.id) === bigMovieMatch.params.movieId);
     return (
         <>
-            <Slider onClick={() => { setClickSlider(1) }}>
+            <Slider>
                 <h1>{title}</h1>
                 <AnimatePresence custom={back} initial={false} onExitComplete={toggleLeaving}>
                     <SliderBtn onClick={decreaseIndex}><i className="fas fa-chevron-left fa-2x"></i></SliderBtn>
@@ -295,7 +292,7 @@ function Sliders({ data, title }: any) {
                 <SliderBtn onClick={increaseIndex}><i className="fas fa-chevron-right fa-2x"></i></SliderBtn>
             </Slider>
             <AnimatePresence>
-                {bigMovieMatch && clickSlider === 1 ?
+                {bigMovieMatch ?
                     <>
                         <Overlay
                             onClick={onOverlayClick}
@@ -306,28 +303,30 @@ function Sliders({ data, title }: any) {
                             style={{ top: scrollY.get() + 100, }}
                             layoutId={bigMovieMatch.params.movieId}
                         >
-                            {clickedMovie && <>
-                                <BigCover style={{ backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(clickedMovie.backdrop_path, "w500")})` }} />
-                                <IconWrap>
-                                    <Icons>
-                                        <IconCircle>
-                                            <i className="fas fa-plus"></i>
-                                        </IconCircle>
-                                        <IconCircle>
-                                            <i className="far fa-thumbs-up"></i>
-                                        </IconCircle>
-                                        <IconCircle>
-                                            <i className="far fa-thumbs-down"></i>
-                                        </IconCircle>
-                                    </Icons>
-                                    <BigInfo>
-                                        <span>개봉일:</span> {clickedMovie.release_date} <br />
-                                        <span>평점:</span> {clickedMovie.vote_average}
-                                    </BigInfo>
-                                </IconWrap>
-                                <BigTitle>{clickedMovie.title}</BigTitle>
-                                <BigOverview>{clickedMovie.overview}</BigOverview>
-                            </>}
+                            {clickedMovie &&
+                                <>
+                                    <BigCover style={{ backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(clickedMovie.backdrop_path, "w500")})` }} />
+                                    <IconWrap>
+                                        <Icons>
+                                            <IconCircle>
+                                                <i className="fas fa-plus"></i>
+                                            </IconCircle>
+                                            <IconCircle>
+                                                <i className="far fa-thumbs-up"></i>
+                                            </IconCircle>
+                                            <IconCircle>
+                                                <i className="far fa-thumbs-down"></i>
+                                            </IconCircle>
+                                        </Icons>
+                                        <BigInfo>
+                                            <span>개봉일:</span> {clickedMovie.release_date} <br />
+                                            <span>평점:</span> {clickedMovie.vote_average}
+                                        </BigInfo>
+                                    </IconWrap>
+                                    <BigTitle>{clickedMovie.title}</BigTitle>
+                                    <BigOverview>{clickedMovie.overview}</BigOverview>
+                                </>
+                            }
                             <SimInfo>이런 영화는 어때요?</SimInfo>
                             <SimWrap>
                                 {simData?.results.slice(0, 4).map((list) => (
