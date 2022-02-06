@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "react-query";
+import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import { getMovies, getTopRatedMovies, getUpcomingMovies, IGetMoviesResult } from "../api";
 import { makeImagePath } from "../utils";
@@ -35,12 +36,14 @@ const Overview = styled.p`
     width: 50%;
     font-family: "GmarketSansLight";
 `;
+const SliderWrap = styled.div``;
+
 
 function Home() {
     const { data, isLoading } = useQuery<IGetMoviesResult>(["movies", "nowPlaying"], getMovies);
     const { data: topLated } = useQuery<IGetMoviesResult>(["topLatedMovies", "topLated"], getTopRatedMovies);
     const { data: upComing } = useQuery<IGetMoviesResult>(["upComingMovies", "upComing"], getUpcomingMovies);
-
+    const [clickSlider, setClickSlider] = useState(0);
     return (
         <Wrapper>{isLoading ? (
             <Loader>Loading...</Loader>
@@ -50,10 +53,15 @@ function Home() {
                     <Title>{data?.results[0].title}</Title>
                     <Overview>{data?.results[0].overview}</Overview>
                 </Banner>
-
-                <Sliders data={data} title="지금 바로 최신영화를 만나세요!" clickSlider={1} />
-                <Sliders data={topLated} title="여러 사람들이 극찬한 영화!" clickSlider={2} />
-                <Sliders data={upComing} title="곧 개봉합니다!" clickSlider={3} />
+                <SliderWrap onClick={() => setClickSlider(1)}>
+                    <Sliders data={data} title="지금 바로 최신영화를 만나세요!" sliderNum={1} clickSlider={clickSlider} />
+                </SliderWrap>
+                <SliderWrap onClick={() => setClickSlider(2)}>
+                    <Sliders data={topLated} title="여러 사람들이 극찬한 영화!" sliderNum={2} clickSlider={clickSlider} />
+                </SliderWrap>
+                <SliderWrap onClick={() => setClickSlider(3)}>
+                    <Sliders data={upComing} title="곧 영화관에서 만나요!" sliderNum={3} clickSlider={clickSlider} />
+                </SliderWrap>
             </>
         )
         }

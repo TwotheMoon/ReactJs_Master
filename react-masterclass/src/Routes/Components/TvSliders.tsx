@@ -1,11 +1,24 @@
-import { motion, useViewportScroll, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion, useViewportScroll } from "framer-motion";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
-import { getSimilarMovies, IGetMoviesResult } from "../../api";
 import { makeImagePath } from "../../utils";
+import { getSimilarTV, IGetMoviesResult } from "../../api";
 
+
+const SliderBtn = styled.button`
+    width: 40px;
+    height: 200px;
+    z-index: 99;
+    background-color: rgba(255,255,255,0.4);
+    border: none;
+    cursor: pointer;
+    &:last-child{
+        position: absolute;
+        right: 0;
+    }
+`;
 const Slider = styled(motion.div)`
     margin-top: 80px;
     width: 100%;
@@ -18,18 +31,6 @@ const Slider = styled(motion.div)`
         left: 20px;
         font-weight: bold;
         font-size: 20px;
-    }
-`;
-const SliderBtn = styled.button`
-    width: 40px;
-    height: 200px;
-    z-index: 99;
-    background-color: rgba(255,255,255,0.4);
-    border: none;
-    cursor: pointer;
-    &:last-child{
-        position: absolute;
-        right: 0;
     }
 `;
 const Row = styled(motion.div)`
@@ -121,7 +122,7 @@ const BigMovie = styled(motion.div)`
     border-radius: 15px;
     overflow: hidden;
     background-color: ${(props) => props.theme.black.lighter};
-    `;
+`;
 const BigCover = styled.div`
     width: 100%;
     background-size: cover;
@@ -217,47 +218,52 @@ const SimTitle = styled.div`
     text-align: center;
 `;
 
+
 const offset = 6;
-let selectMovieId = 0;
-function Sliders({ data, title, sliderNum, clickSlider }: any) {
-    const { scrollY } = useViewportScroll();
+let selectTvId = 0;
+function TvSliders({ data, title, sliderNum, clickSlider }: any) {
+    const { data: simData } = useQuery<IGetMoviesResult>(["simTV", selectTvId], () => getSimilarTV(selectTvId));
     const history = useHistory();
-    const bigMovieMatch = useRouteMatch<{ movieId: string }>("/movies/:movieId");
-    const { data: simData } = useQuery<IGetMoviesResult>(["simMovies", selectMovieId], () => getSimilarMovies(selectMovieId));
+    const bigMovieMatch = useRouteMatch<{ tvId: string }>("/tv/:tvId");
+    const { scrollY } = useViewportScroll();
     const [index, setIndex] = useState(0);
     const [leaving, setLeaving] = useState(false);
     const [back, setBack] = useState(false);
+
     const increaseIndex = () => {
-        if (data) { // 만약 data가 없을때 오류 방지를 위해
+        if (data) {
             if (leaving) return;
             setBack(false);
             toggleLeaving();
-            const totalMovies = data?.results.length - 1; // 메인 영화 1개 빼고
-            const maxIndex = Math.floor(totalMovies / offset) - 1; // 실수가 나올 수 도 있으니 무조건 내림 처리 (추가 1 ~ 2개 영화 안보이기)
+            const totalTvs = data?.results.length - 1;
+            const maxIndex = Math.floor(totalTvs / offset) - 1;
             setIndex((prev) => prev === maxIndex ? 0 : prev + 1);
         }
     };
     const decreaseIndex = () => {
-        if (data) { // 만약 data가 없을때 오류 방지를 위해
+        if (data) {
             if (leaving) return;
             setBack(true);
             toggleLeaving();
-            const totalMovies = data?.results.length - 1; // 메인 영화 1개 빼고
-            const maxIndex = Math.floor(totalMovies / offset) - 1; // 실수가 나올 수 도 있으니 무조건 내림 처리 (추가 1 ~ 2개 영화 안보이기)
+            const totalTvs = data?.results.length - 1;
+            const maxIndex = Math.floor(totalTvs / offset) - 1;
             setIndex((prev) => prev === 0 ? maxIndex : prev - 1);
         }
     };
+
     const toggleLeaving = () => setLeaving((prev) => !prev);
-    const onBoxClicked = (movieId: number) => {
-        history.push(`/movies/${movieId}`);
-        selectMovieId = movieId;
+    const onBoxClicked = (tvId: number) => {
+        history.push(`/tv/${tvId}`);
+        selectTvId = tvId;
     };
-    const onOverlayClick = () => history.push("/home");
-    const clickedMovie = bigMovieMatch?.params.movieId && data?.results.find((movie: any) => String(movie.id) === bigMovieMatch.params.movieId);
+    const onOverlayClick = () => history.push("/tv");
+    const clickedMovie = bigMovieMatch?.params.tvId &&
+        data?.results.find((tv: any) => String(tv.id) === bigMovieMatch.params.tvId);
+
     return (
         <>
             <Slider>
-                <h1>{title}</h1>
+                <h1>{title} </h1>
                 <AnimatePresence custom={back} initial={false} onExitComplete={toggleLeaving}>
                     <SliderBtn onClick={decreaseIndex}><i className="fas fa-chevron-left fa-2x"></i></SliderBtn>
                     <Row
@@ -271,18 +277,18 @@ function Sliders({ data, title, sliderNum, clickSlider }: any) {
                     >
                         {data?.results.slice(1)
                             .slice(offset * index, offset * index + offset)
-                            .map((movie: any) => (
+                            .map((tv: any) => (
                                 <Box
-                                    layoutId={movie.id + ""}
-                                    key={movie.id}
+                                    layoutId={tv.id + ""}
+                                    key={tv.id}
                                     whileHover="hover"
                                     initial="normal"
                                     variants={BoxVariants}
-                                    onClick={() => onBoxClicked(movie.id)}
+                                    onClick={() => onBoxClicked(tv.id)}
                                     transition={{ type: "tween" }}
-                                    bgPhoto={makeImagePath(movie.backdrop_path, "w500")}
+                                    bgPhoto={makeImagePath(tv.backdrop_path, "w500")}
                                 ><Info variants={infoVariants} >
-                                        <h4>{movie.title}</h4>
+                                        <h4>{tv.name}</h4>
                                     </Info>
                                 </Box>
                             ))}
@@ -291,7 +297,7 @@ function Sliders({ data, title, sliderNum, clickSlider }: any) {
                 <SliderBtn onClick={increaseIndex}><i className="fas fa-chevron-right fa-2x"></i></SliderBtn>
             </Slider>
             <AnimatePresence>
-                {bigMovieMatch && sliderNum === clickSlider ?
+                {bigMovieMatch && clickSlider === sliderNum ?
                     <>
                         <Overlay
                             onClick={onOverlayClick}
@@ -300,37 +306,35 @@ function Sliders({ data, title, sliderNum, clickSlider }: any) {
                         />
                         <BigMovie
                             style={{ top: scrollY.get() + 100, }}
-                            layoutId={bigMovieMatch.params.movieId}
+                            layoutId={bigMovieMatch.params.tvId}
                         >
-                            {clickedMovie &&
-                                <>
-                                    <BigCover style={{ backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(clickedMovie.backdrop_path, "w500")})` }} />
-                                    <IconWrap>
-                                        <Icons>
-                                            <IconCircle>
-                                                <i className="fas fa-plus"></i>
-                                            </IconCircle>
-                                            <IconCircle>
-                                                <i className="far fa-thumbs-up"></i>
-                                            </IconCircle>
-                                            <IconCircle>
-                                                <i className="far fa-thumbs-down"></i>
-                                            </IconCircle>
-                                        </Icons>
-                                        <BigInfo>
-                                            <span>개봉일:</span> {clickedMovie.release_date} <br />
-                                            <span>평점:</span> {clickedMovie.vote_average}
-                                        </BigInfo>
-                                    </IconWrap>
-                                    <BigTitle>{clickedMovie.title}</BigTitle>
-                                    <BigOverview>{clickedMovie.overview}</BigOverview>
-                                </>
-                            }
-                            <SimInfo>이런 영화는 어때요?</SimInfo>
+                            {clickedMovie && <>
+                                <BigCover style={{ backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(clickedMovie.backdrop_path, "w500")})` }} />
+                                <IconWrap>
+                                    <Icons>
+                                        <IconCircle>
+                                            <i className="fas fa-plus"></i>
+                                        </IconCircle>
+                                        <IconCircle>
+                                            <i className="far fa-thumbs-up"></i>
+                                        </IconCircle>
+                                        <IconCircle>
+                                            <i className="far fa-thumbs-down"></i>
+                                        </IconCircle>
+                                    </Icons>
+                                    <BigInfo>
+                                        <span>첫방송:</span> {clickedMovie.first_air_date} <br />
+                                        <span>평점:</span> {clickedMovie.vote_average}
+                                    </BigInfo>
+                                </IconWrap>
+                                <BigTitle>{clickedMovie.name}</BigTitle>
+                                <BigOverview>{clickedMovie.overview}</BigOverview>
+                            </>}
+                            <SimInfo>당신이 좋아할 TV 쇼!</SimInfo>
                             <SimWrap>
                                 {simData?.results.slice(0, 4).map((list) => (
                                     <SimCover key={list.id} style={{ backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(list.backdrop_path)})` }}>
-                                        <SimTitle>{list.title}</SimTitle>
+                                        <SimTitle>{list.name}</SimTitle>
                                     </SimCover>
                                 ))}
                             </SimWrap>
@@ -340,8 +344,9 @@ function Sliders({ data, title, sliderNum, clickSlider }: any) {
                     null
                 }
             </AnimatePresence>
+
         </>
     );
 }
 
-export default Sliders;
+export default TvSliders;

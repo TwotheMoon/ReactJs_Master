@@ -41,11 +41,14 @@ export function getUpcomingMovies() {
 export function getTV() {
     return fetch(`${BASE_PATH}/tv/popular?api_key=${API_KEY}&language=ko`).then((response) => response.json());
 }
-export function getPopularTV() {
-    return fetch(`${BASE_PATH}/tv/popular?api_key=${API_KEY}&language=ko&page=6`).then((response) => response.json());
-}
 export function getSimilarTV(tvId: number) {
     return fetch(`${BASE_PATH}/tv/${tvId}/similar?api_key=${API_KEY}&language=ko`).then((response) => response.json());
+}
+export function getTopRatedTV() {
+    return fetch(`${BASE_PATH}/tv/top_rated?api_key=${API_KEY}&language=ko`).then((response) => response.json());
+}
+export function getAiringTV() {
+    return fetch(`${BASE_PATH}/tv/airing_today?api_key=${API_KEY}&language=ko`).then((response) => response.json());
 }
 
 export function getSearchMovies(keyword: string) {
